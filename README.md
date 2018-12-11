@@ -1,4 +1,4 @@
-# Google IMA video ad
+# Google IMA video ad player
 
 Yet another [Google IMA HTML5 SDK](https://developers.google.com/interactive-media-ads/docs/sdks/html5/quickstart) video ad player.
 
@@ -6,7 +6,7 @@ Yet another [Google IMA HTML5 SDK](https://developers.google.com/interactive-med
 
 ```html
 <head>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/google-ima-video@latest/dist/google-ima-video.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/ima-ad-player@latest/dist/ima-ad-player.min.js"></script>
 </head>
 ```
 
@@ -14,7 +14,7 @@ Yet another [Google IMA HTML5 SDK](https://developers.google.com/interactive-med
 var adVideo = document.querySelector('.a-video-element');
 var adContainer = document.querySelector('.a-display-container-element');
 
-GoogleImaVideo({
+ImaAdPlayer({
   video: adVideo,
   displayContainer: adContainer,
   tag: 'https://myadserver.com/path/to/vast/linear/tag.xml',
