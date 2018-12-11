@@ -1,8 +1,8 @@
 {
-  "name": "google-ima-video",
+  "name": "ima-ad-player",
   "version": "0.0.1",
   "description": "Yet another Google IMA video ad player.",
-  "main": "dist/google-ima-video.js",
+  "main": "dist/ima-ad-player.js",
   "scripts": {
     "build": "webpack --progress --mode production",
     "dist": "webpack --progress --mode production",
@@ -11,7 +11,7 @@
   },
   "author": "Karim Slimani <karim@playmedia.fr>",
   "license": "MIT",
-  "repository": "kslimani/google-ima-video",
+  "repository": "kslimani/ima-ad-player",
   "devDependencies": {
     "@babel/core": "^7.2.0",
     "@babel/preset-env": "^7.2.0",

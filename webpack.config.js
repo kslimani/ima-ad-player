@@ -6,10 +6,10 @@ const NotifierPlugin = require('webpack-build-notifier')
 var minify, outputFile, plugins = []
 
 if (process.env.npm_lifecycle_event === 'dist') {
-  outputFile = 'google-ima-video.min.js'
+  outputFile = 'ima-ad-player.min.js'
   minify = true
 } else {
-  outputFile = 'google-ima-video.js'
+  outputFile = 'ima-ad-player.js'
   minify = false // Do not minify ES5 compiled module
 }
 
@@ -25,7 +25,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: outputFile,
-    library: 'GoogleImaVideo',
+    library: 'ImaAdPlayer',
     libraryTarget: 'umd',
   },
   module: {
