@@ -107,7 +107,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.isNumeric = isNumeric;
 exports.makeNum = makeNum;
 exports.makeDefault = makeDefault;
-exports.isFunction = isFunction;
 
 // utils.js
 function isNumeric(n) {
@@ -120,10 +119,6 @@ function makeNum(value, fallback) {
 
 function makeDefault(value, defaultValue) {
   return value === undefined ? defaultValue : value;
-}
-
-function isFunction(value) {
-  return typeof value === 'function';
 }
 
 /***/ }),
