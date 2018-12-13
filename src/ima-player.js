@@ -1,10 +1,12 @@
 // ima-player.js
 
 import {makeNum, makeDefault, isFunction} from './utils'
+import Observable from './observable'
 
 export default class ImaPlayer {
   constructor(options) {
     this._configure(options)
+    this._evt = new Observable()
 
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.ImaSdkSettings.setVpaidMode
     google.ima.settings.setVpaidMode(this._vpaidMode)
@@ -31,8 +33,6 @@ export default class ImaPlayer {
       this._o.maxDuration = makeNum(o.maxDuration, undefined)
     }
 
-    this._o.events = o.events ? o.events : {}
-
     // Assumes by default that the playback is consented by user
     this._o.adWillAutoPlay = !!makeDefault(o.adWillAutoPlay, true)
     this._o.adWillPlayMuted = !!makeDefault(o.adWillPlayMuted, false)
@@ -51,6 +51,18 @@ export default class ImaPlayer {
     }
 
     return google.ima.ImaSdkSettings.VpaidMode.ENABLED
+  }
+
+  on(name, cb) {
+    this._evt.subscribe(name, cb)
+  }
+
+  off(name, cb = null) {
+    if (cb === null) {
+      this._evt.unsubscribeAll(name)
+    } else {
+      this._evt.unsubscribe(name, cb)
+    }
   }
 
   play() {
@@ -262,8 +274,12 @@ export default class ImaPlayer {
     }
   }
 
-  _dispatch(key, e) {
-    isFunction(this._o.events[key]) && this._o.events[key](e, key, this)
+  _dispatch(name, e) {
+    this._evt.notify(name, {
+      name: name,
+      data: e,
+      target: this,
+    })
   }
 
   _endAd() {
