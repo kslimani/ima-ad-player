@@ -221,6 +221,10 @@ exports.default = void 0;
 
 var _utils = __webpack_require__(0);
 
+var _observable = _interopRequireDefault(__webpack_require__(4));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -233,8 +237,9 @@ function () {
   function ImaPlayer(options) {
     _classCallCheck(this, ImaPlayer);
 
-    this._configure(options); // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.ImaSdkSettings.setVpaidMode
+    this._configure(options);
 
+    this._evt = new _observable.default(); // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.ImaSdkSettings.setVpaidMode
 
     google.ima.settings.setVpaidMode(this._vpaidMode); // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.ImaSdkSettings.setLocale
 
@@ -259,14 +264,29 @@ function () {
 
       if (o.maxDuration) {
         this._o.maxDuration = (0, _utils.makeNum)(o.maxDuration, undefined);
-      }
+      } // Assumes by default that the playback is consented by user
 
-      this._o.events = o.events ? o.events : {}; // Assumes by default that the playback is consented by user
 
       this._o.adWillAutoPlay = !!(0, _utils.makeDefault)(o.adWillAutoPlay, true);
       this._o.adWillPlayMuted = !!(0, _utils.makeDefault)(o.adWillPlayMuted, false); // Default is to tell the SDK NOT to save and restore content video state
 
       this._o.restoreVideo = !!(0, _utils.makeDefault)(o.restoreVideo, false);
+    }
+  }, {
+    key: "on",
+    value: function on(name, cb) {
+      this._evt.subscribe(name, cb);
+    }
+  }, {
+    key: "off",
+    value: function off(name) {
+      var cb = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+      if (cb === null) {
+        this._evt.unsubscribeAll(name);
+      } else {
+        this._evt.unsubscribe(name, cb);
+      }
     }
   }, {
     key: "play",
@@ -501,8 +521,12 @@ function () {
     }
   }, {
     key: "_dispatch",
-    value: function _dispatch(key, e) {
-      (0, _utils.isFunction)(this._o.events[key]) && this._o.events[key](e, key, this);
+    value: function _dispatch(name, e) {
+      this._evt.notify(name, {
+        name: name,
+        data: e,
+        target: this
+      });
     }
   }, {
     key: "_endAd",
@@ -536,6 +560,82 @@ function () {
 }();
 
 exports.default = ImaPlayer;
+module.exports = exports.default;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+// observable.js
+var Observable =
+/*#__PURE__*/
+function () {
+  function Observable() {
+    _classCallCheck(this, Observable);
+
+    this.observers = {};
+  }
+
+  _createClass(Observable, [{
+    key: "subscribe",
+    value: function subscribe(n, f) {
+      if (!this.observers[n]) {
+        this.observers[n] = [];
+      }
+
+      this.observers[n].push(f);
+    }
+  }, {
+    key: "unsubscribe",
+    value: function unsubscribe(n, f) {
+      if (!this.observers[n]) {
+        return;
+      }
+
+      var i = this.observers[n].indexOf(f);
+
+      if (i == -1) {
+        return;
+      }
+
+      this.observers[n].splice(i, 1);
+    }
+  }, {
+    key: "unsubscribeAll",
+    value: function unsubscribeAll(n) {
+      if (this.observers[n]) {
+        delete this.observers[n];
+      }
+    }
+  }, {
+    key: "notify",
+    value: function notify(n, e) {
+      if (this.observers[n]) {
+        this.observers[n].forEach(function (o) {
+          return o(e);
+        });
+      }
+    }
+  }]);
+
+  return Observable;
+}();
+
+exports.default = Observable;
 module.exports = exports.default;
 
 /***/ })

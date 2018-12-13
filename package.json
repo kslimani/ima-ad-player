@@ -1,6 +1,6 @@
 {
   "name": "ima-ad-player",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Yet another Google IMA video ad player.",
   "main": "dist/ima-ad-player.js",
   "scripts": {
