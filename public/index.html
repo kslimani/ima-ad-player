@@ -50,37 +50,6 @@
         var adVideo = document.querySelector('.ad-video');
         var adContainer = document.querySelector('.ad-container');
         var adOverlay  = document.querySelector('.ad-overlay');
-        var eventMap = {};
-
-        [
-          'ad_play',
-          'ad_error',
-          'ad_stop',
-          'ad_end',
-          'error',
-          'click',
-          'impression',
-          'started',
-          'first_quartile',
-          'midpoint',
-          'third_quartile',
-          'complete',
-          'paused',
-          'resumed',
-          'skipped',
-          'user_close',
-          'content_resume_requested',
-          'content_pause_requested',
-          'volume_changed',
-          'volume_muted',
-        ].forEach(function(k) {
-          eventMap[k] = function(e, n, p) {
-            // e is event object (may equals undefined)
-            // n is event name
-            // p is ad player instance
-            console.log.apply(console, e ? [n, e] : [n]);
-          };
-        });
 
         function detectMobile() {
           // http://detectmobilebrowsers.com/
@@ -91,7 +60,46 @@
 
         var isMobile = detectMobile();
 
+        function bindEvents(player) {
+          var logEvent = function(o) {
+            /**
+             * o.name is event name
+             * o.data is event object (may equals undefined)
+             * o.target is adplayer instance
+             */
+            console.log.apply(console, o.data ? [o.name, o.data] : [o.name]);
+          };
+
+          [
+            'ad_play',
+            'ad_error',
+            'ad_stop',
+            'ad_end',
+            'error',
+            'click',
+            'impression',
+            'started',
+            'first_quartile',
+            'midpoint',
+            'third_quartile',
+            'complete',
+            'paused',
+            'resumed',
+            'skipped',
+            'user_close',
+            'content_resume_requested',
+            'content_pause_requested',
+            'volume_changed',
+            'volume_muted',
+          ].forEach(function(k) {
+            player.on(k, function(o) {
+              logEvent(o);
+            });
+          });
+        }
+
         function handleAutoplay(player) {
+          bindEvents(player);
           canAutoplay.video({timeout: 800, muted: false}).then(function(o) {
             if (o.result && !isMobile) {
               // Can autoplay
@@ -116,7 +124,6 @@
           vpaidMode: 2,
           locale: 'fr',
           maxDuration: 30000,
-          events: eventMap,
           // restoreVideo: true,
           // timeout: 2000,
           // debug: true,
