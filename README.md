@@ -21,7 +21,6 @@ ImaAdPlayer({
   vpaidMode: 2,
   locale: 'fr',
   maxDuration: 30000,
-  // events: { error: function(e) { console.log(e); }, ad_error: function(e) { console.log(e); } },
   // restoreVideo: true,
   // timeout: 2000,
   // debug: true,
@@ -30,6 +29,15 @@ ImaAdPlayer({
     // Ad player creation failed
     return console.log(error);
   }
+
+  player.on('ad_end', function(o) {
+    /**
+     * o.name is event name
+     * o.data is event object (may equals undefined)
+     * o.target is adplayer instance
+     */
+     console.log(o);
+  });
 
   // Must be done via a user action on mobile devices
   player.play();
