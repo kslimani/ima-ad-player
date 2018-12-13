@@ -1,6 +1,6 @@
 // ima-player.js
 
-import {makeNum, makeDefault, isFunction} from './utils'
+import {makeNum, makeDefault} from './utils'
 import Observable from './observable'
 
 export default class ImaPlayer {

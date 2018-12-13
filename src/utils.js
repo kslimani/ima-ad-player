@@ -11,7 +11,3 @@ export function makeNum(value, fallback) {
 export function makeDefault(value, defaultValue) {
   return value === undefined ? defaultValue : value
 }
-
-export function isFunction(value) {
-  return typeof value === 'function'
-}
