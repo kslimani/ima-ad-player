@@ -66,6 +66,8 @@ export default class ImaPlayer {
   }
 
   play() {
+    this._dispatch('ad_play_intent')
+
     if (this._o.video && this._o.video.load) {
       this._o.video.load()
     }
@@ -163,7 +165,7 @@ export default class ImaPlayer {
       if (! e.getAd().isLinear()) {
         this._dispatch('error', new Error('Non-linear ad is not supported'))
 
-        return this._stopAd()
+        return this.stop()
       } else {
         this._o.maxDuration && this._startMaxDurationTimer()
       }
@@ -222,7 +224,7 @@ export default class ImaPlayer {
     this._playAd()
   }
 
-  _stopAd() {
+  stop() {
     this._dispatch('ad_stop')
     if (this._adsManager) {
       // Signal ads manager to stop and get back to content
@@ -234,7 +236,7 @@ export default class ImaPlayer {
 
   _onMaxDuration() {
     this._dispatch('error', new Error('Maximum duration of ' + this._o.maxDuration + ' ms reached'))
-    this._stopAd()
+    this.stop()
   }
 
   _startMaxDurationTimer() {
