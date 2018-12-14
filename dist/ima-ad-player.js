@@ -286,6 +286,8 @@ function () {
   }, {
     key: "play",
     value: function play() {
+      this._dispatch('ad_play_intent');
+
       if (this._o.video && this._o.video.load) {
         this._o.video.load();
       } // Must be done via a user action on mobile devices
@@ -388,7 +390,7 @@ function () {
         if (!e.getAd().isLinear()) {
           _this2._dispatch('error', new Error('Non-linear ad is not supported'));
 
-          return _this2._stopAd();
+          return _this2.stop();
         } else {
           _this2._o.maxDuration && _this2._startMaxDurationTimer();
         }
@@ -451,8 +453,8 @@ function () {
       this._playAd();
     }
   }, {
-    key: "_stopAd",
-    value: function _stopAd() {
+    key: "stop",
+    value: function stop() {
       this._dispatch('ad_stop');
 
       if (this._adsManager) {
@@ -467,7 +469,7 @@ function () {
     value: function _onMaxDuration() {
       this._dispatch('error', new Error('Maximum duration of ' + this._o.maxDuration + ' ms reached'));
 
-      this._stopAd();
+      this.stop();
     }
   }, {
     key: "_startMaxDurationTimer",
