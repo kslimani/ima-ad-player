@@ -66,15 +66,15 @@ export default class ImaPlayer {
   }
 
   play() {
+    this._userInteraction()
     this._dispatch('ad_play_intent')
-
-    if (this._o.video && this._o.video.load) {
-      this._o.video.load()
-    }
-
-    // Must be done via a user action on mobile devices
-    this._adDisplayContainer.initialize()
+    this._adPlayIntent = true
     this._requestAd()
+  }
+
+  request(tag) {
+    this._dispatch('ad_request_intent')
+    this._requestAd(tag)
   }
 
   resize(width, height) {
@@ -89,6 +89,29 @@ export default class ImaPlayer {
       // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdsManager.setVolume      
       this._adsManager.setVolume(volume)
     }
+  }
+
+  setAdWillAutoPlay(autoPlay) {
+    this._o.adWillAutoPlay = autoPlay
+  }
+
+  setAdWillPlayMuted(muted) {
+    this._o.adWillPlayMuted = muted
+  }
+
+  _userInteraction() {
+    if (this._userHasInteracted) {
+      return
+    }
+
+    this._userHasInteracted = true
+
+    if (this._o.video && this._o.video.load) {
+      this._o.video.load()
+    }
+
+    // Must be done via a user action on mobile devices
+    this._adDisplayContainer.initialize()
   }
 
   _makeAdsLoader() {
@@ -109,13 +132,23 @@ export default class ImaPlayer {
     )
   }
 
-  _requestAd() {
+  _requestAd(tag) {
+    if (this._adRequested) {
+      if (this._adPlayIntent) {
+        this._playAd()
+      }
+
+      return
+    }
+
+    this._adRequested = true
+
     if (! this._adsLoader) {
       this._makeAdsLoader()
     }
 
     let adsRequest = new google.ima.AdsRequest()
-    adsRequest.adTagUrl = this._o.tag
+    adsRequest.adTagUrl = tag ? tag : this._o.tag
     adsRequest.linearAdSlotWidth = this._o.video.offsetWidth
     adsRequest.linearAdSlotHeight = this._o.video.offsetHeight
     adsRequest.nonLinearAdSlotWidth = this._o.video.offsetWidth
@@ -126,6 +159,7 @@ export default class ImaPlayer {
 
     // The requestAds() method triggers _onAdsManagerLoaded() or _onAdError()
     this._adsLoader.requestAds(adsRequest)
+    this._dispatch('ad_request')
   }
 
   _destroyAdsManager() {
@@ -192,13 +226,18 @@ export default class ImaPlayer {
   }
 
   _onAdsManagerLoaded(adsManagerLoadedEvent) {
+    this._dispatch('ads_manager_loaded', adsManagerLoadedEvent)
+
     let adsRenderingSettings = new google.ima.AdsRenderingSettings()
     adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = this._o.restoreVideo
 
     this._destroyAdsManager()
     this._adsManager = adsManagerLoadedEvent.getAdsManager(this._o.video, adsRenderingSettings)
     this._bindAdsManagerEvents()
-    this._playAd()
+
+    if (this._adPlayIntent) {
+      this._playAd()
+    }
   }
 
   stop() {
@@ -267,6 +306,8 @@ export default class ImaPlayer {
     }
 
     this._end = true
+    this._adPlayIntent = false
+    this._adRequested = false
     this._resetMaxDurationTimer()
     this._dispatch('ad_end')
   }
