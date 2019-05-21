@@ -140,25 +140,9 @@ export default class ImaPlayer {
       this._onAdError(e)
     })
 
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
-      this._dispatch('content_resume_requested')
+    this._adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, (e) => {
+      this._dispatch('content_resume_requested', e)
       this._endAd()
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
-      this._dispatch('content_pause_requested')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, () => {
-      this._dispatch('loaded')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.CLICK, () => {
-      this._dispatch('click')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.IMPRESSION, () => {
-      this._dispatch('impression')
     })
 
     this._adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, (e) => {
@@ -170,48 +154,41 @@ export default class ImaPlayer {
         this._o.maxDuration && this._startMaxDurationTimer()
       }
 
-      this._dispatch('started')
+      this._dispatch('started', e)
     })
 
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.FIRST_QUARTILE, () => {
-      this._dispatch('first_quartile')
-    })
+    let adEvents = {
+      'ad_break_ready': google.ima.AdEvent.Type.AD_BREAK_READY,
+      'ad_buffering': google.ima.AdEvent.Type.AD_BUFFERING,
+      'ad_metadata': google.ima.AdEvent.Type.AD_METADATA,
+      'ad_progress': google.ima.AdEvent.Type.AD_PROGRESS,
+      'all_ads_completed': google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+      'click': google.ima.AdEvent.Type.CLICK,
+      'complete': google.ima.AdEvent.Type.COMPLETE,
+      'content_pause_requested': google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED,
+      'duration_change': google.ima.AdEvent.Type.DURATION_CHANGE,
+      'first_quartile': google.ima.AdEvent.Type.FIRST_QUARTILE,
+      'impression': google.ima.AdEvent.Type.IMPRESSION,
+      'interaction': google.ima.AdEvent.Type.INTERACTION,
+      'linear_changed': google.ima.AdEvent.Type.LINEAR_CHANGED,
+      'loaded': google.ima.AdEvent.Type.LOADED,
+      'log': google.ima.AdEvent.Type.LOG,
+      'midpoint': google.ima.AdEvent.Type.MIDPOINT,
+      'paused': google.ima.AdEvent.Type.PAUSED,
+      'resumed': google.ima.AdEvent.Type.RESUMED,
+      'skippable_state_changed': google.ima.AdEvent.Type.SKIPPABLE_STATE_CHANGED,
+      'skipped': google.ima.AdEvent.Type.SKIPPED,
+      'third_quartile': google.ima.AdEvent.Type.THIRD_QUARTILE,
+      'user_close': google.ima.AdEvent.Type.USER_CLOSE,
+      'volume_changed': google.ima.AdEvent.Type.VOLUME_CHANGED,
+      'volume_muted': google.ima.AdEvent.Type.VOLUME_MUTED,
+    }
 
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.MIDPOINT, () => {
-      this._dispatch('midpoint')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.THIRD_QUARTILE, () => {
-      this._dispatch('third_quartile')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
-      this._dispatch('complete')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
-      this._dispatch('paused')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
-      this._dispatch('resumed')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.SKIPPED, () => {
-      this._dispatch('skipped')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.VOLUME_CHANGED, () => {
-      this._dispatch('volume_changed')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.VOLUME_MUTED, () => {
-      this._dispatch('volume_muted')
-    })
-
-    this._adsManager.addEventListener(google.ima.AdEvent.Type.USER_CLOSE, () => {
-      this._dispatch('user_close')
-    })
+    for (let adEvent in adEvents) {
+      this._adsManager.addEventListener(adEvents[adEvent], (e) => {
+        this._dispatch(adEvent, e)
+      })
+    }
   }
 
   _onAdsManagerLoaded(adsManagerLoadedEvent) {
