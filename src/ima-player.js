@@ -7,6 +7,7 @@ export default class ImaPlayer {
   constructor(options) {
     this._configure(options)
     this._evt = new Observable()
+    this._adRequested = false
 
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.ImaSdkSettings.setVpaidMode
     google.ima.settings.setVpaidMode(this._vpaidMode)
@@ -66,10 +67,11 @@ export default class ImaPlayer {
   }
 
   play() {
-    this._userInteraction()
     this._dispatch('ad_play_intent')
     this._adPlayIntent = true
-    this._requestAd()
+    this._userInteraction(() => {
+      this._requestAd()
+    })
   }
 
   request(tag) {
@@ -99,19 +101,40 @@ export default class ImaPlayer {
     this._o.adWillPlayMuted = muted
   }
 
-  _userInteraction() {
-    if (this._userHasInteracted) {
-      return
+  stop() {
+    this._dispatch('ad_stop')
+    if (this._adsManager) {
+      // Signal ads manager to stop and get back to content
+      this._adsManager.stop()
+    } else {
+      this._endAd()
     }
+  }
 
-    this._userHasInteracted = true
+  ended() {
+    // Signals the video content is finished.
+    // This will allow to play post-roll ads (if any)
+    this._adsLoader && this._adsLoader.contentComplete()
+  }
 
-    if (this._o.video && this._o.video.load) {
-      this._o.video.load()
-    }
-
-    // Must be done via a user action on mobile devices
+  _userInteraction(next) {
+    // Must be done via a user interaction
     this._adDisplayContainer.initialize()
+
+    if (! this._o.video.load) {
+      next()
+    }
+
+    let eh = () => {
+      this._o.video.removeEventListener('loadedmetadata', eh, false)
+      this._o.video.removeEventListener('error', eh, false)
+      next()
+    }
+
+    // Enable video element to "capture" user interaction
+    this._o.video.addEventListener('loadedmetadata', eh, false)
+    this._o.video.addEventListener('error', eh, false)
+    this._o.video.load()
   }
 
   _makeAdsLoader() {
@@ -133,7 +156,11 @@ export default class ImaPlayer {
   }
 
   _requestAd(tag) {
+    this._end = false
+
+    // Check if ad pre-requested
     if (this._adRequested) {
+      // Start ad only if play method called
       if (this._adPlayIntent) {
         this._playAd()
       }
@@ -174,6 +201,12 @@ export default class ImaPlayer {
       this._onAdError(e)
     })
 
+    this._adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, (e) => {
+      this._end = false
+      this._dispatch('content_pause_requested', e)
+      this._dispatch('ad_begin') // "content_pause_requested" event alias
+    })
+
     this._adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, (e) => {
       this._dispatch('content_resume_requested', e)
       this._endAd()
@@ -199,7 +232,6 @@ export default class ImaPlayer {
       'all_ads_completed': google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
       'click': google.ima.AdEvent.Type.CLICK,
       'complete': google.ima.AdEvent.Type.COMPLETE,
-      'content_pause_requested': google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED,
       'duration_change': google.ima.AdEvent.Type.DURATION_CHANGE,
       'first_quartile': google.ima.AdEvent.Type.FIRST_QUARTILE,
       'impression': google.ima.AdEvent.Type.IMPRESSION,
@@ -240,16 +272,6 @@ export default class ImaPlayer {
     }
   }
 
-  stop() {
-    this._dispatch('ad_stop')
-    if (this._adsManager) {
-      // Signal ads manager to stop and get back to content
-      this._adsManager.stop()
-    } else {
-      this._endAd()
-    }
-  }
-
   _onMaxDuration() {
     this._dispatch('error', new Error('Maximum duration of ' + this._o.maxDuration + ' ms reached'))
     this.stop()
@@ -276,7 +298,6 @@ export default class ImaPlayer {
 
   _playAd() {
     try {
-      this._end = false
       this._dispatch('ad_play')
 
       this._adsManager.init(
