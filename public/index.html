@@ -3,9 +3,10 @@
   <head>
     <meta name="viewport" content="width=655, user-scalable=yes" />
     <script src="https://cdn.jsdelivr.net/npm/can-autoplay@3.0.0/build/can-autoplay.min.js"></script>
+    <script src="videoplayer.js"></script>
     <script src="ima-ad-player.js"></script>
     <style>
-      .ad-video {
+      .content-video {
         width: 640px;
         height: 360px;
         background-color: #000;
@@ -45,7 +46,7 @@
   <body>
     <div class="ad">
       <div class="ad-container-video">
-        <video class="ad-video" playsinline src="https://diffusepro.com/video-ad/medias/h264_big_buck_bunny_trailer-1080p.mp4"></video>
+        <video class="content-video" playsinline src="https://diffusepro.com/video-ad/medias/h264_big_buck_bunny_trailer-1080p.mp4"></video>
       </div>
       <div class="ad-container"></div>
       <div class="ad-overlay"><div class="ad-overlay-text"><div>Click to play</div></div></div>
@@ -59,7 +60,7 @@
 
     <script>
       (function () {
-        var adVideo = document.querySelector('.ad-video');
+        var videoElement = document.querySelector('.content-video');
         var adContainer = document.querySelector('.ad-container');
         var adOverlay = document.querySelector('.ad-overlay');
         var stopAdButton = document.querySelector('.btn-stop-ad');
@@ -81,21 +82,26 @@
             /**
              * o.name is event name
              * o.data is event object (may equals undefined)
-             * o.target is adplayer instance
+             * o.target is ad player instance
              */
-            console.log.apply(console, o.data ? [o.name, o] : [o.name]);
+            var m = '[AD PLAYER] ' + o.name;
+            console.log.apply(console, o.data ? [m, o] : [m]);
           };
 
           [
+            // ImaPlayer events
             'ad_play_intent',
             'ad_play',
             'ad_request_intent',
             'ad_request',
-            'ad_error',
+            // 'ads_manager_loaded',
+            'ad_begin',
             'ad_stop',
             'ad_end',
+            'ad_error',
+            'error',
 
-            // 'ads_manager_loaded',
+            // IMA SDK events
             'ad_break_ready',
             'ad_buffering',
             'ad_metadata',
@@ -129,97 +135,6 @@
           });
         }
 
-        // A button to immediately stop ad scenario
-        function handleStopAdButton(adPlayer) {
-          stopAdButton.addEventListener('click', function() {
-            adPlayer.stop();
-          });
-
-          adPlayer.on('ad_play', function() {
-            stopAdButton.disabled = false;
-          });
-
-          adPlayer.on('ad_end', function() {
-            stopAdButton.disabled = true;
-          });
-        }
-
-        // A simple video player class
-        function VideoPlayer(options) {
-          this._o = options;
-          this._initControls();
-          this._bindPlayOnce();
-          this._bindVideoEvents();
-          this._bindAdPlayerEvents();
-        }
-        VideoPlayer.prototype._initControls = function() {
-          this._onPause = function () {
-            this._o.btPlay.disabled = false;
-            this._o.btPause.disabled = true;
-          }.bind(this);
-
-          this._onPlaying = function () {
-            this._o.btPlay.disabled = true;
-            this._o.btPause.disabled = false;
-          }.bind(this);
-
-          // Video play button
-          this._o.btPlay.addEventListener('click', function() {
-            this.play();
-          }.bind(this));
-
-          // Video pause button
-          this._o.btPause.addEventListener('click', function() {
-            this.pause();
-          }.bind(this));
-        }
-        VideoPlayer.prototype._enableControls = function() {
-          this._o.v.addEventListener('pause', this._onPause);
-          this._o.v.addEventListener('playing', this._onPlaying);
-          this._o.v.paused || this._onPlaying();
-        }
-        VideoPlayer.prototype._disableControls = function() {
-          this._o.v.removeEventListener('pause', this._onPause);
-          this._o.v.removeEventListener('playing', this._onPlaying);
-          this._o.btPlay.disabled = true;
-          this._o.btPause.disabled = true;
-        }
-        VideoPlayer.prototype._bindPlayOnce = function() {
-          // Start ad scenario when playback started for first time
-          this._o.v.addEventListener('play', function() {
-            this._o.p.play();
-          }.bind(this), {once: true});
-        }
-        VideoPlayer.prototype._bindVideoEvents = function() {
-          // Reset ad scenario when playback completes
-          this._o.v.addEventListener('ended', function() {
-            this._bindPlayOnce();
-          }.bind(this));
-        }
-        VideoPlayer.prototype._bindAdPlayerEvents = function() {
-          // Ad scenario is starting (pause & disable buttons)
-          this._o.p.on('content_pause_requested', function(e) {
-            this._disableControls();
-            this.pause();
-          }.bind(this));
-
-          // "content_resume_requested" may not be triggered on errors
-          this._o.p.on('ad_end', function(e) {
-            this._enableControls();
-            this.play();
-          }.bind(this));
-        }
-        VideoPlayer.prototype.preloadAd = function() {
-          // pre-request ad (usefull when autoplay is not allowed)
-          this._o.p.request();
-        }
-        VideoPlayer.prototype.play = function() {
-          this._o.v.play();
-        }
-        VideoPlayer.prototype.pause = function() {
-          this._o.v.pause();
-        }
-
         // This function handle video player autoplay policy
         function handleVpAutoplay(videoPlayer, preloadAd) {
           canAutoplay.video({timeout: 800, muted: false}).then(function(o) {
@@ -227,15 +142,11 @@
               // Can autoplay
               videoPlayer.play();
             } else {
+              // Check for ad pre-request
               preloadAd && videoPlayer.preloadAd();
-              // Can not autoplay (display overlay)
-              adOverlay.style.visibility = 'visible';
-              adOverlay.addEventListener('click', function(e) {
-                adOverlay.style.visibility = 'hidden';
 
-                // Must be done via a user action on mobile devices
-                videoPlayer.play();
-              });
+              // Can not autoplay (display overlay)
+              videoPlayer.showOverlay()
             }
           });
         }
@@ -244,16 +155,19 @@
         var TAG_VAST2_VPAID_NOAD = 'https://diffusepro.com/video-ad/vast/linear/vast2_vpaid_noad.xml';
         var TAG_VAST3_NOAD = 'https://diffusepro.com/video-ad/vast/linear/vast3_noad.xml';
 
+        // VMAP with pre-roll + mid-roll + post-roll
+        var TAG_VMAP = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpremidpost&cmsid=496&vid=short_onecue&correlator=';
+
         // For development purposes, ad player is created and injected in video player
         // (in "real world" scenario, ad player should be created by video player plugin)
         ImaAdPlayer({
-          video: adVideo,
+          video: videoElement,
           displayContainer: adContainer,
-          tag: TAG_VAST2,
+          tag: TAG_VMAP,
           vpaidMode: 2,
           locale: 'fr',
           maxDuration: 30000,
-          // restoreVideo: true,
+          restoreVideo: true,
           // timeout: 2000,
           // debug: true,
         }, function(player, error) {
@@ -262,15 +176,18 @@
             return console.log(error);
           }
 
-          handleStopAdButton(player);
           bindAdEvents(player);
 
-          // Inject ad player in video player instance
+          // google.ima.settings.setDisableCustomPlaybackForIOS10Plus(true); // Uncomment to handle skippable ad on some iOS devices
+
+          // Create video player
           var vp = new VideoPlayer({
-            v: adVideo,
-            p: player,
-            btPlay: playButton,
-            btPause: pauseButton,
+            videoElement: videoElement,
+            playButton: playButton,
+            pauseButton: pauseButton,
+            stopAdButton: stopAdButton,
+            adOverlay: adOverlay,
+            adPlayer: player,
           });
 
           var requestAdIfNoAutoplay = false; // Set to true to pre-load ad when autoplay is not allowed
