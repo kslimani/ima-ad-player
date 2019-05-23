@@ -38,6 +38,9 @@ export default class ImaPlayer {
       this._o.maxDuration = makeNum(o.maxDuration, undefined)
     }
 
+    // Default is undefined or object
+    this._o.adsRequestOptions = o.adsRequestOptions
+
     // Default is to let IMA SDK handle non-linear display duration
     this._o.nonLinearMaxDuration = makeNum(o.nonLinearMaxDuration, -1)
 
@@ -85,9 +88,9 @@ export default class ImaPlayer {
     })
   }
 
-  request(tag) {
-    this._dispatch('ad_request_intent')
-    this._requestAd(tag)
+  request(options) {
+    this._dispatch('ad_request_intent', options)
+    this._requestAd(options)
   }
 
   resize(width, height) {
@@ -171,7 +174,7 @@ export default class ImaPlayer {
     )
   }
 
-  _requestAd(tag) {
+  _requestAd(options) {
     this._end = false
 
     // Check if ad pre-requested
@@ -191,18 +194,30 @@ export default class ImaPlayer {
     }
 
     let adsRequest = new google.ima.AdsRequest()
-    adsRequest.adTagUrl = tag ? tag : this._o.tag
+
+    // Set ad request default settings
+    adsRequest.adTagUrl = this._o.tag
     adsRequest.linearAdSlotWidth = this._o.video.offsetWidth
     adsRequest.linearAdSlotHeight = this._o.video.offsetHeight
     adsRequest.nonLinearAdSlotWidth = this._o.video.offsetWidth
     adsRequest.nonLinearAdSlotHeight = this._o.video.offsetHeight
-
     adsRequest.setAdWillAutoPlay(this._o.adWillAutoPlay)
     adsRequest.setAdWillPlayMuted(this._o.adWillPlayMuted)
 
+    // Assumes that ad request options is an object with ads request properties
+    // defined in the IMA SDK documentation (will override default settings)
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdsRequest
+    let adsRequestOptions = options ? options : this._o.adsRequestOptions
+    if (adsRequestOptions) {
+      for (let option in adsRequestOptions) {
+        adsRequest[option] && (adsRequest[option] = adsRequestOptions[option])
+      }
+    }
+
+    this._dispatch('ad_request', adsRequest)
+
     // The requestAds() method triggers _onAdsManagerLoaded() or _onAdError()
     this._adsLoader.requestAds(adsRequest)
-    this._dispatch('ad_request')
   }
 
   _destroyAdsManager() {
