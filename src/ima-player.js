@@ -263,6 +263,10 @@ export default class ImaPlayer {
       'volume_muted': google.ima.AdEvent.Type.VOLUME_MUTED,
     }
 
+    // Not documented, may be unavailable in the future
+    google.ima.AdEvent.Type.AD_CAN_PLAY && (adEvents.ad_can_play = google.ima.AdEvent.Type.AD_CAN_PLAY)
+    google.ima.AdEvent.Type.VIEWABLE_IMPRESSION && (adEvents.viewable_impression = google.ima.AdEvent.Type.VIEWABLE_IMPRESSION)
+
     for (let adEvent in adEvents) {
       this._adsManager.addEventListener(adEvents[adEvent], (e) => {
         this._dispatch(adEvent, e)
