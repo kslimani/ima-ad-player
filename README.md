@@ -23,6 +23,9 @@ ImaAdPlayer({
   maxDuration: 30000,
   // nonLinearMaxDuration: 8000,
   // restoreVideo: true,
+  // adsRequestOptions: {
+  //   vastLoadTimeout: 10000,
+  // },
   // timeout: 2000,
   // debug: true,
 }, function(player, error) {
