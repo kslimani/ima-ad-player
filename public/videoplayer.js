@@ -37,12 +37,6 @@ VideoPlayer.prototype._init = function() {
 
   // Video play button
   this._o.playButton.addEventListener('click', function() {
-    // Hide overlay (if visible)
-    if (this._overlayVisible) {
-      this._o.adOverlay.style.visibility = 'hidden';
-      this._overlayVisible = false
-    }
-
     this.play();
   }.bind(this));
 
@@ -68,7 +62,7 @@ VideoPlayer.prototype._init = function() {
   this._o.adOverlay.addEventListener('click', function() {
     // Must be done via a user action on mobile devices
     this.play();
-  });
+  }.bind(this));
 
   this._bindVideoEnded(true);
   this._bindAdPlayerEvents();
@@ -133,6 +127,12 @@ VideoPlayer.prototype.preloadAd = function() {
 
 VideoPlayer.prototype.play = function() {
   this._log('play');
+
+  // Hide overlay (if visible)
+  if (this._overlayVisible) {
+    this._o.adOverlay.style.visibility = 'hidden';
+    this._overlayVisible = false
+  }
 
   if (this._initialPlay) {
     this._initialPlay = false;
