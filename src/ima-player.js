@@ -38,6 +38,9 @@ export default class ImaPlayer {
       this._o.maxDuration = makeNum(o.maxDuration, undefined)
     }
 
+    // Default is to let IMA SDK handle non-linear display duration
+    this._o.nonLinearMaxDuration = makeNum(o.nonLinearMaxDuration, -1)
+
     // Assumes by default that the playback is consented by user
     this._o.adWillAutoPlay = !!makeDefault(o.adWillAutoPlay, true)
     this._o.adWillPlayMuted = !!makeDefault(o.adWillPlayMuted, false)
@@ -226,15 +229,27 @@ export default class ImaPlayer {
     })
 
     this._adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, (e) => {
-      if (! e.getAd().isLinear()) {
-        this._dispatch('error', new Error('Non-linear ad is not supported'))
-
-        return this._stop()
-      } else {
-        this._o.maxDuration && this._startMaxDurationTimer()
-      }
-
       this._dispatch('started', e)
+
+      let ad = e.getAd()
+
+      if (ad.isLinear()) {
+        this._o.maxDuration && this._startMaxDurationTimer()
+      } else {
+        // Signal non-linear ad scenario
+        let duration = this._o.nonLinearMaxDuration
+        this._dispatch('ad_non_linear', {ad, duration})
+
+        // By default, IMA SDK will automatically close non-linear ad (after 45 seconds ?)
+        if (this._o.nonLinearMaxDuration > 0) {
+          setTimeout(() => {
+            this._adsManager && this._adsManager.stop()
+          }, this._o.nonLinearMaxDuration)
+        }
+
+        // Ends to play/resume content video
+        this._endAd()
+      }
     })
 
     let adEvents = {
