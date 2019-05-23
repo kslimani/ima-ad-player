@@ -13,13 +13,11 @@ VideoPlayer.prototype._log = function(m) {
 
 VideoPlayer.prototype._init = function() {
   this._onPause = function () {
-    this._log('pause event');
     this._o.playButton.disabled = false;
     this._o.pauseButton.disabled = true;
   }.bind(this);
 
   this._onPlaying = function () {
-    this._log('play event');
     this._o.playButton.disabled = true;
     this._o.pauseButton.disabled = false;
   }.bind(this);
@@ -122,7 +120,7 @@ VideoPlayer.prototype._bindAdPlayerEvents = function() {
 
 VideoPlayer.prototype.preloadAd = function() {
   // pre-request ad (usefull when autoplay is not allowed)
-  this._o.adPlayer.request();
+  this._o.adPlayer.request(/* {vastLoadTimeout: 8000} */)
 };
 
 VideoPlayer.prototype.play = function() {
