@@ -89,21 +89,25 @@
           };
 
           [
-            // ImaPlayer events
+            /** ImaPlayer events **/
             'ad_play_intent',
             'ad_play',
             'ad_request_intent',
             'ad_request',
             // 'ads_manager_loaded',
+            // 'ads_rendering_settings',
             'ad_begin',
+            'ad_non_linear',
+            'ad_stop_intent',
             'ad_stop',
             'ad_end',
             'ad_error',
             'error',
 
-            // IMA SDK events
+            /** IMA SDK events **/
             'ad_break_ready',
             'ad_buffering',
+            'ad_can_play',
             'ad_metadata',
             // 'ad_progress',
             'all_ads_completed',
@@ -126,6 +130,7 @@
             'started',
             'third_quartile',
             'user_close',
+            'viewable_impression',
             'volume_changed',
             'volume_muted',
           ].forEach(function(k) {
@@ -155,8 +160,17 @@
         var TAG_VAST2_VPAID_NOAD = 'https://diffusepro.com/video-ad/vast/linear/vast2_vpaid_noad.xml';
         var TAG_VAST3_NOAD = 'https://diffusepro.com/video-ad/vast/linear/vast3_noad.xml';
 
-        // VMAP with pre-roll + mid-roll + post-roll
+        // VMAP Pre-, Mid-, and Post-rolls, Single Ads
         var TAG_VMAP = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpremidpost&cmsid=496&vid=short_onecue&correlator=';
+
+        // Single Non-linear Inline
+        var TAG_NON_LINEAR = 'https://pubads.g.doubleclick.net/gampad/ads?sz=480x70&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dnonlinear&correlator=';
+
+        // Single VPAID 2.0 Non-Linear
+        var TAG_NON_LINEAR_VPAID = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dnonlinearvpaid2js&correlator=';
+
+        // VMAP - Pre-roll Single Ad, Mid-roll Standard Pod with 3 ads, Post-roll Single Ad
+        var TAG_PODS = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpremidpostpod&cmsid=496&vid=short_onecue&correlator=';
 
         // For development purposes, ad player is created and injected in video player
         // (in "real world" scenario, ad player should be created by video player plugin)
@@ -167,6 +181,7 @@
           vpaidMode: 2,
           locale: 'fr',
           maxDuration: 30000,
+          nonLinearMaxDuration: 8000,
           restoreVideo: true,
           // timeout: 2000,
           // debug: true,
@@ -178,7 +193,9 @@
 
           bindAdEvents(player);
 
-          // google.ima.settings.setDisableCustomPlaybackForIOS10Plus(true); // Uncomment to handle skippable ad on some iOS devices
+          // Here can setup custom configuration
+          // google.ima.settings.setDisableCustomPlaybackForIOS10Plus(true);
+          // player.getAdsRenderingSettings().loadVideoTimeout = 10000;
 
           // Create video player
           var vp = new VideoPlayer({
