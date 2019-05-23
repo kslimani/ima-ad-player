@@ -20,10 +20,6 @@ export default class ImaPlayer {
     // Assumes the display container and video element are correctly positioned and sized
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/#html
     this._adDisplayContainer = new google.ima.AdDisplayContainer(this._o.displayContainer, this._o.video)
-
-    // Create default ads rendering settings
-    this._adsRenderingSettings = new google.ima.AdsRenderingSettings()
-    this._adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = this._o.restoreVideo
   }
 
   _configure(o) {
@@ -41,6 +37,9 @@ export default class ImaPlayer {
     // Default is undefined or object
     this._o.adsRequestOptions = o.adsRequestOptions
 
+    // Default is undefined or object
+    this._o.adsRenderingOptions = o.adsRenderingOptions
+
     // Default is to let IMA SDK handle non-linear display duration
     this._o.nonLinearMaxDuration = makeNum(o.nonLinearMaxDuration, -1)
 
@@ -50,6 +49,12 @@ export default class ImaPlayer {
 
     // Default is to tell the SDK NOT to save and restore content video state
     this._o.restoreVideo =  !!makeDefault(o.restoreVideo, false)
+  }
+
+  _setProperties(target, properties) {
+    for (let prop in properties) {
+      target[prop] && (target[prop] = properties[prop])
+    }
   }
 
   get _vpaidMode() {
@@ -62,10 +67,6 @@ export default class ImaPlayer {
     }
 
     return google.ima.ImaSdkSettings.VpaidMode.ENABLED
-  }
-
-  getAdsRenderingSettings() {
-    return this._adsRenderingSettings
   }
 
   on(name, cb) {
@@ -209,9 +210,7 @@ export default class ImaPlayer {
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdsRequest
     let adsRequestOptions = options ? options : this._o.adsRequestOptions
     if (adsRequestOptions) {
-      for (let option in adsRequestOptions) {
-        adsRequest[option] && (adsRequest[option] = adsRequestOptions[option])
-      }
+      this._setProperties(adsRequest, adsRequestOptions)
     }
 
     this._dispatch('ad_request', adsRequest)
@@ -305,12 +304,23 @@ export default class ImaPlayer {
   }
 
   _onAdsManagerLoaded(adsManagerLoadedEvent) {
-    // Debug purpose events
     this._dispatch('ads_manager_loaded', adsManagerLoadedEvent)
-    this._dispatch('ads_rendering_settings', this._adsRenderingSettings)
+
+    // Create default ads rendering settings
+    let adsRenderingSettings = new google.ima.AdsRenderingSettings()
+    adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = this._o.restoreVideo
+
+    // Assumes that ads rendering options is an object with ads rendering settings properties
+    // defined in the IMA SDK documentation (will override default settings)
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdsRenderingSettings
+    if (this._o.adsRenderingOptions) {
+      this._setProperties(adsRenderingSettings, this._o.adsRenderingOptions)
+    }
+
+    this._dispatch('ads_rendering_settings', adsRenderingSettings)
 
     this._destroyAdsManager()
-    this._adsManager = adsManagerLoadedEvent.getAdsManager(this._o.video, this._adsRenderingSettings)
+    this._adsManager = adsManagerLoadedEvent.getAdsManager(this._o.video, adsRenderingSettings)
     this._bindAdsManagerEvents()
 
     if (this._adPlayIntent) {
