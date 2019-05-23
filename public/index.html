@@ -186,6 +186,9 @@
           // adsRequestOptions: {
           //   vastLoadTimeout: 10000,
           // },
+          // adsRenderingOptions: {
+          //   loadVideoTimeout: 10000,
+          // },
           // timeout: 2000,
           // debug: true,
         }, function(player, error) {
@@ -196,9 +199,8 @@
 
           bindAdEvents(player);
 
-          // Here can setup custom configuration
+          // Here can setup global settings
           // google.ima.settings.setDisableCustomPlaybackForIOS10Plus(true);
-          // player.getAdsRenderingSettings().loadVideoTimeout = 10000;
 
           // Create video player
           var vp = new VideoPlayer({
