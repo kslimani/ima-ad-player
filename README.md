@@ -26,6 +26,9 @@ ImaAdPlayer({
   // adsRequestOptions: {
   //   vastLoadTimeout: 10000,
   // },
+  // adsRenderingOptions: {
+  //   loadVideoTimeout: 10000,
+  // },
   // timeout: 2000,
   // debug: true,
 }, function(player, error) {
