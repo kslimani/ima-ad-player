@@ -20,6 +20,10 @@ export default class ImaPlayer {
     // Assumes the display container and video element are correctly positioned and sized
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/#html
     this._adDisplayContainer = new google.ima.AdDisplayContainer(this._o.displayContainer, this._o.video)
+
+    // Create default ads rendering settings
+    this._adsRenderingSettings = new google.ima.AdsRenderingSettings()
+    this._adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = this._o.restoreVideo
   }
 
   _configure(o) {
@@ -52,6 +56,10 @@ export default class ImaPlayer {
     }
 
     return google.ima.ImaSdkSettings.VpaidMode.ENABLED
+  }
+
+  getAdsRenderingSettings() {
+    return this._adsRenderingSettings
   }
 
   on(name, cb) {
@@ -258,13 +266,12 @@ export default class ImaPlayer {
   }
 
   _onAdsManagerLoaded(adsManagerLoadedEvent) {
+    // Debug purpose events
     this._dispatch('ads_manager_loaded', adsManagerLoadedEvent)
-
-    let adsRenderingSettings = new google.ima.AdsRenderingSettings()
-    adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = this._o.restoreVideo
+    this._dispatch('ads_rendering_settings', this._adsRenderingSettings)
 
     this._destroyAdsManager()
-    this._adsManager = adsManagerLoadedEvent.getAdsManager(this._o.video, adsRenderingSettings)
+    this._adsManager = adsManagerLoadedEvent.getAdsManager(this._o.video, this._adsRenderingSettings)
     this._bindAdsManagerEvents()
 
     if (this._adPlayIntent) {
