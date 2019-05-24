@@ -49,6 +49,7 @@ module.exports = {
     disableHostCheck: true,
     compress: true,
     host: "0.0.0.0",
+    // public: "www.acme.com",
     port: 8080
   }
 }

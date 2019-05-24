@@ -3,9 +3,10 @@
   <head>
     <meta name="viewport" content="width=655, user-scalable=yes" />
     <script src="https://cdn.jsdelivr.net/npm/can-autoplay@3.0.0/build/can-autoplay.min.js"></script>
+    <script src="videoplayer.js"></script>
     <script src="ima-ad-player.js"></script>
     <style>
-      .ad-video {
+      .content-video {
         width: 640px;
         height: 360px;
         background-color: #000;
@@ -26,6 +27,8 @@
         height: 360px;
         display: table;
         visibility: hidden;
+        background: #000;
+        cursor: pointer;
       }
       .ad-overlay-text {
         display: table-cell;
@@ -34,7 +37,7 @@
         color: #fff;
         font-size: 300%;
       }
-      .btn-stop {
+      .btn {
         margin-top: 360px;
         width: 10em;
         height: 5em;
@@ -44,22 +47,26 @@
   <body>
     <div class="ad">
       <div class="ad-container-video">
-        <video class="ad-video" playsinline></video>
+        <video class="content-video" playsinline src="https://diffusepro.com/video-ad/medias/h264_big_buck_bunny_trailer-1080p.mp4"></video>
       </div>
       <div class="ad-container"></div>
       <div class="ad-overlay"><div class="ad-overlay-text"><div>Click to play</div></div></div>
     </div>
 
     <div>
-      <button class="btn-stop" disabled>STOP</button>
+      <button class="btn btn-stop-ad" disabled>STOP AD</button>
+      <button class="btn btn-play" disabled>PLAY VIDEO</button>
+      <button class="btn btn-pause" disabled>PAUSE VIDEO</button>
     </div>
 
     <script>
       (function () {
-        var adVideo = document.querySelector('.ad-video');
+        var videoElement = document.querySelector('.content-video');
         var adContainer = document.querySelector('.ad-container');
         var adOverlay = document.querySelector('.ad-overlay');
-        var stopButton = document.querySelector('.btn-stop');
+        var stopAdButton = document.querySelector('.btn-stop-ad');
+        var playButton = document.querySelector('.btn-play');
+        var pauseButton = document.querySelector('.btn-pause');
 
         function detectMobile() {
           // http://detectmobilebrowsers.com/
@@ -70,86 +77,124 @@
 
         var isMobile = detectMobile();
 
-        function bindEvents(player) {
+        // This function bind and log ad player events
+        function bindAdEvents(adPlayer) {
           var logEvent = function(o) {
             /**
              * o.name is event name
              * o.data is event object (may equals undefined)
-             * o.target is adplayer instance
+             * o.target is ad player instance
              */
-            console.log.apply(console, o.data ? [o.name, o.data] : [o.name]);
+            var m = '[AD PLAYER] ' + o.name;
+            console.log.apply(console, o.data ? [m, o] : [m]);
           };
 
           [
+            /** ImaPlayer events **/
             'ad_play_intent',
             'ad_play',
-            'ad_error',
+            'ad_request_intent',
+            'ad_request',
+            // 'ads_manager_loaded',
+            // 'ads_rendering_settings',
+            'ad_begin',
+            'ad_non_linear',
+            'ad_stop_intent',
             'ad_stop',
             'ad_end',
+            'ad_error',
             'error',
+
+            /** IMA SDK events **/
+            'ad_break_ready',
+            'ad_buffering',
+            'ad_can_play',
+            'ad_metadata',
+            // 'ad_progress',
+            'all_ads_completed',
             'click',
-            'impression',
-            'started',
-            'first_quartile',
-            'midpoint',
-            'third_quartile',
             'complete',
+            'content_pause_requested',
+            'content_resume_requested',
+            'duration_change',
+            'first_quartile',
+            'impression',
+            'interaction',
+            'linear_changed',
+            'loaded',
+            'log',
+            'midpoint',
             'paused',
             'resumed',
+            'skippable_state_changed',
             'skipped',
+            'started',
+            'third_quartile',
             'user_close',
-            'content_resume_requested',
-            'content_pause_requested',
+            'viewable_impression',
             'volume_changed',
             'volume_muted',
           ].forEach(function(k) {
-            player.on(k, function(o) {
+            adPlayer.on(k, function(o) {
               logEvent(o);
             });
           });
         }
 
-        function handleAutoplay(player) {
-          bindEvents(player);
+        // This function handle video player autoplay policy
+        function handleVpAutoplay(videoPlayer, preloadAd) {
           canAutoplay.video({timeout: 800, muted: false}).then(function(o) {
             if (o.result && !isMobile) {
               // Can autoplay
-              player.play();
+              videoPlayer.play();
             } else {
-              // Can not autoplay (display overlay)
-              adOverlay.style.visibility = 'visible';
-              adOverlay.addEventListener('click', function(e) {
-                adOverlay.style.visibility = 'hidden';
+              // Check for ad pre-request
+              preloadAd && videoPlayer.preloadAd();
 
-                // Must be done via a user action on mobile devices
-                player.play();
-              });
+              // Can not autoplay (display overlay)
+              videoPlayer.showOverlay()
             }
           });
         }
 
-        function handleStopButton(player) {
-          stopButton.addEventListener('click', function() {
-            player && player.stop();
-          });
+        var TAG_VAST2 = 'https://diffusepro.com/video-ad/vast/linear/vast2.xml';
+        var TAG_VAST2_VPAID_NOAD = 'https://diffusepro.com/video-ad/vast/linear/vast2_vpaid_noad.xml';
+        var TAG_VAST3_NOAD = 'https://diffusepro.com/video-ad/vast/linear/vast3_noad.xml';
 
-          player.on('ad_play', function() {
-            stopButton.disabled = false;
-          });
+        // IMA Sample Tags: https://developers.google.com/interactive-media-ads/docs/sdks/html5/tags
 
-          player.on('ad_end', function() {
-            stopButton.disabled = true;
-          });
-        }
+        // Single Skippable Inline
+        var TAG_SKIPPABLE = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=';
 
+        // VMAP Pre-, Mid-, and Post-rolls, Single Ads
+        var TAG_VMAP = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpremidpost&cmsid=496&vid=short_onecue&correlator=';
+
+        // Single Non-linear Inline
+        var TAG_NON_LINEAR = 'https://pubads.g.doubleclick.net/gampad/ads?sz=480x70&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dnonlinear&correlator=';
+
+        // Single VPAID 2.0 Non-Linear
+        var TAG_NON_LINEAR_VPAID = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dnonlinearvpaid2js&correlator=';
+
+        // VMAP - Pre-roll Single Ad, Mid-roll Standard Pod with 3 ads, Post-roll Single Ad
+        var TAG_PODS = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpremidpostpod&cmsid=496&vid=short_onecue&correlator=';
+
+        // For development purposes, ad player is created and injected in video player
+        // (in "real world" scenario, ad player should be created by video player plugin)
         ImaAdPlayer({
-          video: adVideo,
+          video: videoElement,
           displayContainer: adContainer,
-          tag: 'https://diffusepro.com/video-ad/vast/linear/vast2.xml',
+          tag: TAG_VMAP,
           vpaidMode: 2,
           locale: 'fr',
           maxDuration: 30000,
-          // restoreVideo: true,
+          nonLinearMaxDuration: 8000,
+          restoreVideo: true,
+          // adsRequestOptions: {
+          //   vastLoadTimeout: 10000,
+          // },
+          // adsRenderingOptions: {
+          //   loadVideoTimeout: 10000,
+          // },
           // timeout: 2000,
           // debug: true,
         }, function(player, error) {
@@ -158,8 +203,24 @@
             return console.log(error);
           }
 
-          handleStopButton(player);
-          handleAutoplay(player);
+          bindAdEvents(player);
+
+          // Here can setup global settings
+          isMobile && google.ima.settings.setDisableCustomPlaybackForIOS10Plus(true);
+
+          // Create video player
+          var vp = new VideoPlayer({
+            videoElement: videoElement,
+            playButton: playButton,
+            pauseButton: pauseButton,
+            stopAdButton: stopAdButton,
+            adOverlay: adOverlay,
+            adPlayer: player,
+          });
+
+          var requestAdIfNoAutoplay = false; // Set to true to pre-load ad when autoplay is not allowed
+
+          handleVpAutoplay(vp, requestAdIfNoAutoplay);
         });
 
       })();
