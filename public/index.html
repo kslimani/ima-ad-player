@@ -28,6 +28,7 @@
         display: table;
         visibility: hidden;
         background: #000;
+        cursor: pointer;
       }
       .ad-overlay-text {
         display: table-cell;
@@ -160,6 +161,11 @@
         var TAG_VAST2_VPAID_NOAD = 'https://diffusepro.com/video-ad/vast/linear/vast2_vpaid_noad.xml';
         var TAG_VAST3_NOAD = 'https://diffusepro.com/video-ad/vast/linear/vast3_noad.xml';
 
+        // IMA Sample Tags: https://developers.google.com/interactive-media-ads/docs/sdks/html5/tags
+
+        // Single Skippable Inline
+        var TAG_SKIPPABLE = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=';
+
         // VMAP Pre-, Mid-, and Post-rolls, Single Ads
         var TAG_VMAP = 'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpremidpost&cmsid=496&vid=short_onecue&correlator=';
 
@@ -200,7 +206,7 @@
           bindAdEvents(player);
 
           // Here can setup global settings
-          // google.ima.settings.setDisableCustomPlaybackForIOS10Plus(true);
+          isMobile && google.ima.settings.setDisableCustomPlaybackForIOS10Plus(true);
 
           // Create video player
           var vp = new VideoPlayer({
