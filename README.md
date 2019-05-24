@@ -11,13 +11,14 @@ Yet another [Google IMA HTML5 SDK](https://developers.google.com/interactive-med
 ```
 
 ```javascript
-var adVideo = document.querySelector('.a-video-element');
+// Ad player assumes the ad display container and video element are correctly positioned and sized
+var videoElement = document.querySelector('.a-video-element');
 var adContainer = document.querySelector('.a-display-container-element');
 
 ImaAdPlayer({
-  video: adVideo,
+  video: videoElement,
   displayContainer: adContainer,
-  tag: 'https://myadserver.com/path/to/vast/linear/tag.xml',
+  tag: 'https://myadserver.com/path/to/vast/tag.xml',
   vpaidMode: 2,
   locale: 'fr',
   maxDuration: 30000,
@@ -42,12 +43,12 @@ ImaAdPlayer({
   });
 
   player.on('ad_end', function(o) {
-    // Play/resume content video
+    // Play or resume content video
 
     /**
      * o.name is event name
      * o.data is event object (may equals undefined)
-     * o.target is adplayer instance
+     * o.target is ad player instance
      */
      console.log(o);
   });
@@ -56,5 +57,3 @@ ImaAdPlayer({
   player.play();
 });
 ```
-
-Note: ad player assumes the display container and video element are correctly positioned and sized.
