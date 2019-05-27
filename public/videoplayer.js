@@ -4,6 +4,7 @@ function VideoPlayer(options) {
   this._o = options;
   this._initialPlay = true
   this._ended = false
+  this._src = this._o.videoElement.src
   this._init();
 }
 
@@ -46,14 +47,6 @@ VideoPlayer.prototype._init = function() {
   // Ad stop button
   this._o.stopAdButton.addEventListener('click', function() {
     this._o.adPlayer.stop()
-  }.bind(this));
-
-  this._o.adPlayer.on('ad_begin', function() {
-    this._o.stopAdButton.disabled = false;
-  }.bind(this));
-
-  this._o.adPlayer.on('ad_end', function() {
-    this._o.stopAdButton.disabled = true;
   }.bind(this));
 
   // Ad overlay click handler
@@ -101,6 +94,7 @@ VideoPlayer.prototype._bindVideoEnded = function(enabled) {
 VideoPlayer.prototype._bindAdPlayerEvents = function() {
   // Ad scenario is beginning (pause & disable buttons)
   this._o.adPlayer.on('ad_begin', function(e) {
+    this._o.stopAdButton.disabled = false;
     this._bindVideoEnded(false);
     this._disableControls();
     this.pause();
@@ -108,14 +102,36 @@ VideoPlayer.prototype._bindAdPlayerEvents = function() {
 
   // "content_resume_requested" may not be triggered on errors
   this._o.adPlayer.on('ad_end', function(e) {
+    this._o.stopAdButton.disabled = true;
     this._bindVideoEnded(true);
     this._enableControls();
 
     // Avoid video to starts over after a post-roll
     if (! this._ended) {
       this.play();
+    } else {
+      // May happen with iOS 10+ device
+      if (this._src !== this._o.videoElement.src) {
+        this._setSrc(this._src, function() {
+          this._log('src restored');
+        }.bind(this));
+      }
     }
   }.bind(this));
+};
+
+VideoPlayer.prototype._setSrc = function(src, next) {
+  var eh = function() {
+    this._o.videoElement.removeEventListener('loadedmetadata', eh, false)
+    this._o.videoElement.removeEventListener('error', eh, false)
+    next()
+  }.bind(this);
+
+  // Enable video element to "capture" user interaction
+  this._o.videoElement.addEventListener('loadedmetadata', eh, false)
+  this._o.videoElement.addEventListener('error', eh, false)
+  this._o.videoElement.src = src
+  this._o.videoElement.load()
 };
 
 VideoPlayer.prototype.preloadAd = function() {
