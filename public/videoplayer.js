@@ -92,46 +92,98 @@ VideoPlayer.prototype._bindVideoEnded = function(enabled) {
 };
 
 VideoPlayer.prototype._bindAdPlayerEvents = function() {
-  // Ad scenario is beginning (pause & disable buttons)
+  this._o.adPlayer.on('ad_error', function(e) {
+    this._adError = true;
+  }.bind(this));
+
+  // Ad scenario is beginning (pause video & update controls)
   this._o.adPlayer.on('ad_begin', function(e) {
+    this._adError = false;
     this._o.stopAdButton.disabled = false;
     this._bindVideoEnded(false);
     this._disableControls();
+    this._pauseTime = this._o.videoElement.currentTime;
     this.pause();
   }.bind(this));
 
-  // "content_resume_requested" may not be triggered on errors
+  // Ad scenario has ended (play or resume video & update controls)
   this._o.adPlayer.on('ad_end', function(e) {
     this._o.stopAdButton.disabled = true;
     this._bindVideoEnded(true);
     this._enableControls();
 
     // Avoid video to starts over after a post-roll
-    if (! this._ended) {
-      this.play();
+    if (this._ended) {
+      this._restoreContentIfMissing();
     } else {
-      // May happen with iOS 10+ device
-      if (this._src !== this._o.videoElement.src) {
-        this._setSrc(this._src, function() {
-          this._log('src restored');
-        }.bind(this));
-      }
+      this._restoreContentIfMissing(function() {
+        this.play();
+      }.bind(this));
     }
   }.bind(this));
 };
+
+VideoPlayer.prototype._iOS10Plus = function() {
+  var version = [0, 0, 0];
+
+  if (/iP(hone|od|ad)/.test(navigator.platform)) {
+    var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
+    version = [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)];
+  }
+
+  return version[0] >= 10;
+}
+
+VideoPlayer.prototype._adErrorWithIos10Plus = function() {
+  // With iOS10+, video content may not properly restored when an ad error occured
+  return this._adError && this._iOS10Plus();
+}
+
+VideoPlayer.prototype._restoreContentIfMissing = function(next) {
+  if (this._contentRestored() && ! this._adErrorWithIos10Plus()) {
+    next && next();
+  } else {
+    this._setSrc(this._src, function() {
+      // Check for seek after mid-roll
+      if (this._pauseTime > 1 && ! this._ended) {
+        this._seek(this._pauseTime, next);
+      } else {
+        next && next();
+      }
+    }.bind(this));
+  }
+}
+
+VideoPlayer.prototype._contentRestored = function() {
+  return this._src === this._o.videoElement.src
+}
 
 VideoPlayer.prototype._setSrc = function(src, next) {
   var eh = function() {
     this._o.videoElement.removeEventListener('loadedmetadata', eh, false)
     this._o.videoElement.removeEventListener('error', eh, false)
-    next()
+    next && next()
   }.bind(this);
 
-  // Enable video element to "capture" user interaction
   this._o.videoElement.addEventListener('loadedmetadata', eh, false)
   this._o.videoElement.addEventListener('error', eh, false)
+  this._log('restore src to ' + src)
   this._o.videoElement.src = src
   this._o.videoElement.load()
+};
+
+VideoPlayer.prototype._seek = function(seekTime, next) {
+  if (this._o.videoElement.seekable.length) {
+    if (this._o.videoElement.seekable.end(0) > seekTime) {
+      this._log('seek to ' + seekTime)
+      this._o.videoElement.currentTime = seekTime;
+      next && next();
+    }
+  } else {
+    setTimeout(function() {
+      this._seek(seekTime, next);
+    }.bind(this), 100);
+  }
 };
 
 VideoPlayer.prototype.preloadAd = function() {
