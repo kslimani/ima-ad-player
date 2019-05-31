@@ -2,7 +2,7 @@
 
 export default class Observable {
   constructor() {
-    this.observers = {}
+    this.unsubscribeAll()
   }
 
   subscribe(n, f) {
@@ -26,8 +26,10 @@ export default class Observable {
     this.observers[n].splice(i, 1)
   }
 
-  unsubscribeAll(n) {
-    if (this.observers[n]) {
+  unsubscribeAll(n = null) {
+    if (n === null) {
+      this.observers = {}
+    } else if (this.observers[n]) {
       delete this.observers[n]
     }
   }
