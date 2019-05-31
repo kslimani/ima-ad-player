@@ -7,6 +7,7 @@ export default class ImaPlayer {
   constructor(options) {
     this._configure(options)
     this._evt = new Observable()
+    this._adRequesting = false
     this._adRequested = false
 
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.ImaSdkSettings.setVpaidMode
@@ -127,9 +128,24 @@ export default class ImaPlayer {
     this._adsLoader && this._adsLoader.contentComplete()
   }
 
-  _userInteraction(next) {
+  initAdDisplayContainer() {
     // Must be done via a user interaction
     this._adDisplayContainer.initialize()
+  }
+
+  destroy() {
+    if (! this._end) {
+      this._resetMaxDurationTimer()
+      this._adsManager && this._adsManager.stop()
+    }
+
+    this._destroyAdsManager()
+    this._adsLoader && this._adsLoader.destroy()
+    this._adDisplayContainer && this._adDisplayContainer.destroy()
+  }
+
+  _userInteraction(next) {
+    this.initAdDisplayContainer()
 
     if (! this._o.video.load) {
       next()
@@ -178,7 +194,13 @@ export default class ImaPlayer {
   _requestAd(options) {
     this._end = false
 
-    // Check if ad pre-requested
+    // Check if ad request is pending
+    if (this._adRequesting) {
+      // Ad will autostart if play method called
+      return
+    }
+
+    // Check if ad already requested (pre-request)
     if (this._adRequested) {
       // Start ad only if play method called
       if (this._adPlayIntent) {
@@ -188,7 +210,7 @@ export default class ImaPlayer {
       return
     }
 
-    this._adRequested = true
+    this._adRequesting = true
 
     if (! this._adsLoader) {
       this._makeAdsLoader()
@@ -323,6 +345,10 @@ export default class ImaPlayer {
     this._adsManager = adsManagerLoadedEvent.getAdsManager(this._o.video, adsRenderingSettings)
     this._bindAdsManagerEvents()
 
+    // Ad is ready to be played
+    this._adRequesting = false
+    this._adRequested = true
+
     if (this._adPlayIntent) {
       this._playAd()
     }
@@ -384,6 +410,7 @@ export default class ImaPlayer {
 
     this._end = true
     this._adPlayIntent = false
+    this._adRequesting = false
     this._adRequested = false
     this._resetMaxDurationTimer()
     this._dispatch('ad_end')
