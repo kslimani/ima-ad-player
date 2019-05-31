@@ -133,6 +133,17 @@ export default class ImaPlayer {
     this._adDisplayContainer.initialize()
   }
 
+  destroy() {
+    if (! this._end) {
+      this._resetMaxDurationTimer()
+      this._adsManager && this._adsManager.stop()
+    }
+
+    this._destroyAdsManager()
+    this._adsLoader && this._adsLoader.destroy()
+    this._adDisplayContainer && this._adDisplayContainer.destroy()
+  }
+
   _userInteraction(next) {
     this.initAdDisplayContainer()
 
