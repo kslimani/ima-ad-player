@@ -235,6 +235,7 @@ function () {
     this._configure(options);
 
     this._evt = new _observable["default"]();
+    this._adRequesting = false;
     this._adRequested = false; // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.ImaSdkSettings.setVpaidMode
 
     google.ima.settings.setVpaidMode(this._vpaidMode); // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.ImaSdkSettings.setLocale
@@ -358,12 +359,31 @@ function () {
       this._adsLoader && this._adsLoader.contentComplete();
     }
   }, {
+    key: "initAdDisplayContainer",
+    value: function initAdDisplayContainer() {
+      // Must be done via a user interaction
+      this._adDisplayContainer.initialize();
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      if (!this._end) {
+        this._resetMaxDurationTimer();
+
+        this._adsManager && this._adsManager.stop();
+      }
+
+      this._destroyAdsManager();
+
+      this._adsLoader && this._adsLoader.destroy();
+      this._adDisplayContainer && this._adDisplayContainer.destroy();
+    }
+  }, {
     key: "_userInteraction",
     value: function _userInteraction(next) {
       var _this2 = this;
 
-      // Must be done via a user interaction
-      this._adDisplayContainer.initialize();
+      this.initAdDisplayContainer();
 
       if (!this._o.video.load) {
         next();
@@ -414,7 +434,13 @@ function () {
   }, {
     key: "_requestAd",
     value: function _requestAd(options) {
-      this._end = false; // Check if ad pre-requested
+      this._end = false; // Check if ad request is pending
+
+      if (this._adRequesting) {
+        // Ad will autostart if play method called
+        return;
+      } // Check if ad already requested (pre-request)
+
 
       if (this._adRequested) {
         // Start ad only if play method called
@@ -425,7 +451,7 @@ function () {
         return;
       }
 
-      this._adRequested = true;
+      this._adRequesting = true;
 
       if (!this._adsLoader) {
         this._makeAdsLoader();
@@ -575,7 +601,11 @@ function () {
 
       this._adsManager = adsManagerLoadedEvent.getAdsManager(this._o.video, adsRenderingSettings);
 
-      this._bindAdsManagerEvents();
+      this._bindAdsManagerEvents(); // Ad is ready to be played
+
+
+      this._adRequesting = false;
+      this._adRequested = true;
 
       if (this._adPlayIntent) {
         this._playAd();
@@ -649,6 +679,7 @@ function () {
 
       this._end = true;
       this._adPlayIntent = false;
+      this._adRequesting = false;
       this._adRequested = false;
 
       this._resetMaxDurationTimer();

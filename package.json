@@ -1,6 +1,6 @@
 {
   "name": "ima-ad-player",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Yet another Google IMA video ad player.",
   "main": "dist/ima-ad-player.js",
   "scripts": {
@@ -11,6 +11,7 @@
   },
   "author": "Karim Slimani <karim@playmedia.fr>",
   "license": "MIT",
+  "keywords": ["ima", "html5", "ad", "googleads"],
   "repository": "kslimani/ima-ad-player",
   "devDependencies": {
     "@babel/core": "^7.4.5",
