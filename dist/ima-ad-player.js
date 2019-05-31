@@ -367,9 +367,12 @@ function () {
   }, {
     key: "destroy",
     value: function destroy() {
+      var unsubscribeEvents = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
       if (!this._end) {
         this._resetMaxDurationTimer();
 
+        unsubscribeEvents && this._evt.unsubscribeAll();
         this._adsManager && this._adsManager.stop();
       }
 
@@ -732,7 +735,7 @@ function () {
   function Observable() {
     _classCallCheck(this, Observable);
 
-    this.observers = {};
+    this.unsubscribeAll();
   }
 
   _createClass(Observable, [{
@@ -761,8 +764,12 @@ function () {
     }
   }, {
     key: "unsubscribeAll",
-    value: function unsubscribeAll(n) {
-      if (this.observers[n]) {
+    value: function unsubscribeAll() {
+      var n = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (n === null) {
+        this.observers = {};
+      } else if (this.observers[n]) {
         delete this.observers[n];
       }
     }
