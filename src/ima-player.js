@@ -128,9 +128,13 @@ export default class ImaPlayer {
     this._adsLoader && this._adsLoader.contentComplete()
   }
 
-  _userInteraction(next) {
+  initAdDisplayContainer() {
     // Must be done via a user interaction
     this._adDisplayContainer.initialize()
+  }
+
+  _userInteraction(next) {
+    this.initAdDisplayContainer()
 
     if (! this._o.video.load) {
       next()
