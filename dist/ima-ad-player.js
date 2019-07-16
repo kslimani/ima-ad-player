@@ -604,7 +604,9 @@ function () {
 
       this._adsManager = adsManagerLoadedEvent.getAdsManager(this._o.video, adsRenderingSettings);
 
-      this._bindAdsManagerEvents(); // Ad is ready to be played
+      this._bindAdsManagerEvents();
+
+      this._dispatch('ads_manager', this._adsManager); // Ad is ready to be played
 
 
       this._adRequesting = false;
