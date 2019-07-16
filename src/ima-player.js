@@ -346,6 +346,8 @@ export default class ImaPlayer {
     this._adsManager = adsManagerLoadedEvent.getAdsManager(this._o.video, adsRenderingSettings)
     this._bindAdsManagerEvents()
 
+    this._dispatch('ads_manager', this._adsManager)
+
     // Ad is ready to be played
     this._adRequesting = false
     this._adRequested = true
