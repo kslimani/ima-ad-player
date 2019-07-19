@@ -2,6 +2,7 @@
 // A simple video player
 function VideoPlayer(options) {
   this._o = options;
+  this._loaded = false
   this._initialPlay = true
   this._ended = false
   this._src = this._o.videoElement.src
@@ -11,6 +12,23 @@ function VideoPlayer(options) {
 VideoPlayer.prototype._log = function(m) {
   console.log('[VIDEO PLAYER] ' + m);
 };
+
+VideoPlayer.prototype._load = function(next) {
+  if (this._loaded) {
+    return next();
+  }
+
+  var eh = function() {
+   this._o.videoElement.removeEventListener('loadedmetadata', eh, false)
+   this._o.videoElement.removeEventListener('error', eh, false)
+   this._loaded = true
+   next()
+  }.bind(this);
+
+  this._o.videoElement.addEventListener('loadedmetadata', eh, false)
+  this._o.videoElement.addEventListener('error', eh, false)
+  this._o.videoElement.load()
+}
 
 VideoPlayer.prototype._init = function() {
   this._onPause = function () {
@@ -194,21 +212,25 @@ VideoPlayer.prototype.preloadAd = function() {
 VideoPlayer.prototype.play = function() {
   this._log('play');
 
-  // Hide overlay (if visible)
-  if (this._overlayVisible) {
-    this._o.adOverlay.style.visibility = 'hidden';
-    this._overlayVisible = false
-  }
+  this._o.adPlayer.initAdDisplayContainer()
 
-  if (this._initialPlay) {
-    this._initialPlay = false;
-    this._ended = false
+  this._load(function() {
+    // Hide overlay (if visible)
+    if (this._overlayVisible) {
+      this._o.adOverlay.style.visibility = 'hidden';
+      this._overlayVisible = false
+    }
 
-    // Start ad scenario on initial play
-    this._o.adPlayer.play()
-  } else {
-    this._o.videoElement.play();
-  }
+    if (this._initialPlay) {
+      this._initialPlay = false;
+      this._ended = false
+
+      // Start ad scenario on initial play
+      this._o.adPlayer.play()
+    } else {
+      this._o.videoElement.play();
+    }
+  }.bind(this));
 };
 
 VideoPlayer.prototype.pause = function() {
