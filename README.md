@@ -54,6 +54,7 @@ ImaAdPlayer({
   });
 
   // Must be done via a user interaction (if autoplay not permitted)
+  // player.initAdDisplayContainer()
   player.play();
 });
 ```
