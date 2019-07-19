@@ -21,6 +21,7 @@ export default class ImaPlayer {
     // Assumes the display container and video element are correctly positioned and sized
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/#html
     this._adDisplayContainer = new google.ima.AdDisplayContainer(this._o.displayContainer, this._o.video)
+    this._adDisplayContainerInit = false
   }
 
   _configure(o) {
@@ -130,7 +131,10 @@ export default class ImaPlayer {
 
   initAdDisplayContainer() {
     // Must be done via a user interaction
-    this._adDisplayContainer.initialize()
+    if (! this._adDisplayContainerInit) {
+      this._adDisplayContainer.initialize()
+      this._adDisplayContainerInit = true
+    }
   }
 
   destroy(unsubscribeEvents = true) {
