@@ -86,9 +86,8 @@ export default class ImaPlayer {
   play() {
     this._dispatch('ad_play_intent')
     this._adPlayIntent = true
-    this._userInteraction(() => {
-      this._requestAd()
-    })
+    this.initAdDisplayContainer()
+    this._requestAd()
   }
 
   request(options) {
@@ -147,25 +146,6 @@ export default class ImaPlayer {
     this._destroyAdsManager()
     this._adsLoader && this._adsLoader.destroy()
     this._adDisplayContainer && this._adDisplayContainer.destroy()
-  }
-
-  _userInteraction(next) {
-    this.initAdDisplayContainer()
-
-    if (! this._o.video.load) {
-      next()
-    }
-
-    let eh = () => {
-      this._o.video.removeEventListener('loadedmetadata', eh, false)
-      this._o.video.removeEventListener('error', eh, false)
-      next()
-    }
-
-    // Enable video element to "capture" user interaction
-    this._o.video.addEventListener('loadedmetadata', eh, false)
-    this._o.video.addEventListener('error', eh, false)
-    this._o.video.load()
   }
 
   _stop() {
