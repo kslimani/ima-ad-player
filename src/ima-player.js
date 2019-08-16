@@ -20,7 +20,7 @@ export default class ImaPlayer {
 
     // Assumes the display container and video element are correctly positioned and sized
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/#html
-    this._adDisplayContainer = new google.ima.AdDisplayContainer(this._o.displayContainer, this._o.video)
+    this._adDisplayContainer = new google.ima.AdDisplayContainer(this._o.displayContainer, this._o.video, this._o.clickTracking)
     this._adDisplayContainerInit = false
   }
 
@@ -35,6 +35,10 @@ export default class ImaPlayer {
     if (o.maxDuration) {
       this._o.maxDuration = makeNum(o.maxDuration, undefined)
     }
+
+    // Default is undefined or alternative video ad click element
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdDisplayContainer
+    this._o.clickTracking = o.clickTracking
 
     // Default is undefined or object
     this._o.adsRequestOptions = o.adsRequestOptions
