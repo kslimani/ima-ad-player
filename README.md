@@ -14,6 +14,7 @@ Yet another [Google IMA HTML5 SDK](https://developers.google.com/interactive-med
 // Ad player assumes the ad display container and video element are correctly positioned and sized
 var videoElement = document.querySelector('.a-video-element');
 var adContainer = document.querySelector('.a-display-container-element');
+// var clickTrackingElement = document.querySelector('.optional-click-tracking-element');
 
 ImaAdPlayer({
   video: videoElement,
@@ -32,6 +33,7 @@ ImaAdPlayer({
   // },
   // timeout: 2000,
   // debug: true,
+  // clickTracking: clickTrackingElement,
 }, function(player, error) {
   if (error) {
     // Ad player creation failed
