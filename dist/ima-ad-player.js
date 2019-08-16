@@ -246,7 +246,7 @@ function () {
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/#html
 
 
-    this._adDisplayContainer = new google.ima.AdDisplayContainer(this._o.displayContainer, this._o.video);
+    this._adDisplayContainer = new google.ima.AdDisplayContainer(this._o.displayContainer, this._o.video, this._o.clickTracking);
     this._adDisplayContainerInit = false;
   }
 
@@ -262,8 +262,11 @@ function () {
 
       if (o.maxDuration) {
         this._o.maxDuration = (0, _utils.makeNum)(o.maxDuration, undefined);
-      } // Default is undefined or object
+      } // Default is undefined or alternative video ad click element
+      // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdDisplayContainer
 
+
+      this._o.clickTracking = o.clickTracking; // Default is undefined or object
 
       this._o.adsRequestOptions = o.adsRequestOptions; // Default is undefined or object
 
