@@ -38,6 +38,16 @@
         color: #fff;
         font-size: 300%;
       }
+      .ad-custom-click {
+        position: absolute;
+        top: 90px;
+        left: 160px;
+        width: 320px;
+        height: 180px;
+        background-color: coral;
+        opacity: 0.2;
+        visibility: hidden;
+      }
       .btn {
         margin-top: 360px;
         width: 10em;
@@ -51,6 +61,7 @@
         <video class="content-video" playsinline src="https://diffusepro.com/video-ad/medias/h264_big_buck_bunny_trailer-1080p.mp4"></video>
       </div>
       <div class="ad-container"></div>
+      <div class="ad-custom-click"></div>
       <div class="ad-overlay"><div class="ad-overlay-text"><div>Click to play</div></div></div>
     </div>
 
@@ -64,6 +75,7 @@
       (function () {
         var videoElement = document.querySelector('.content-video');
         var adContainer = document.querySelector('.ad-container');
+        var adClickElement = document.querySelector('.ad-custom-click');
         var adOverlay = document.querySelector('.ad-overlay');
         var stopAdButton = document.querySelector('.btn-stop-ad');
         var playButton = document.querySelector('.btn-play');
@@ -199,6 +211,7 @@
           // },
           // timeout: 2000,
           // debug: true,
+          // clickTracking: adClickElement,
         }, function(player, error) {
           if (error) {
             // Ad player creation failed
@@ -221,6 +234,9 @@
           });
 
           var requestAdIfNoAutoplay = false; // Set to true to pre-load ad when autoplay is not allowed
+
+          // player.on('started', function(){ adClickElement.style.visibility = 'visible'; });
+          // player.on('ad_end', function(){ adClickElement.style.visibility = 'hidden'; });
 
           handleVpAutoplay(vp, requestAdIfNoAutoplay);
         });
