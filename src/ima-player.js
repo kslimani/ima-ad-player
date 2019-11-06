@@ -36,6 +36,9 @@ export default class ImaPlayer {
       this._o.maxDuration = makeNum(o.maxDuration, undefined)
     }
 
+    // Default is undefined
+    this._o.locale = o.locale
+
     // Default is undefined or alternative video ad click element
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdDisplayContainer
     this._o.clickTracking = o.clickTracking
