@@ -1,4 +1,10 @@
 {
-  "presets": [["@babel/preset-env", { "modules": "commonjs" }]],
-  "plugins": ["add-module-exports"]
+  "presets": [["@babel/preset-env", {
+    "modules": "commonjs",
+    "corejs": "3",
+    "useBuiltIns": "usage"
+  }]],
+  "plugins": [
+    "add-module-exports"
+  ]
 }
