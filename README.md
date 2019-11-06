@@ -1,6 +1,6 @@
 # Google IMA video ad player
 
-Yet another [Google IMA HTML5 SDK](https://developers.google.com/interactive-media-ads/docs/sdks/html5/quickstart) video ad player.
+Yet another [Google IMA HTML5 SDK](https://developers.google.com/interactive-media-ads/docs/sdks/html5) video ad player.
 
 ## Quick usage
 
