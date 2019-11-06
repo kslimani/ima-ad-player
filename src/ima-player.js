@@ -10,10 +10,10 @@ export default class ImaPlayer {
     this._adRequesting = false
     this._adRequested = false
 
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.ImaSdkSettings.setVpaidMode
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.ImaSdkSettings#setVpaidMode
     google.ima.settings.setVpaidMode(this._vpaidMode)
 
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.ImaSdkSettings.setLocale
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.ImaSdkSettings#setLocale
     if (this._o.locale) {
       google.ima.settings.setLocale(this._o.locale)
     }
@@ -40,7 +40,7 @@ export default class ImaPlayer {
     this._o.locale = o.locale
 
     // Default is undefined or alternative video ad click element
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdDisplayContainer
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdDisplayContainer
     this._o.clickTracking = o.clickTracking
 
     // Default is undefined or object
@@ -104,14 +104,14 @@ export default class ImaPlayer {
 
   resize(width, height) {
     if (this._adsManager) {
-      // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdsManager.resize
+      // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#resize
       this._adsManager.resize(width, height, google.ima.ViewMode.NORMAL)
     }
   }
 
   setVolume(volume) {
     if (this._adsManager) {
-      // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdsManager.setVolume      
+      // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#setVolume
       this._adsManager.setVolume(volume)
     }
   }
@@ -221,7 +221,7 @@ export default class ImaPlayer {
 
     // Assumes that ad request options is an object with ads request properties
     // defined in the IMA SDK documentation (will override default settings)
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdsRequest
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRequest
     let adsRequestOptions = options ? options : this._o.adsRequestOptions
     if (adsRequestOptions) {
       this._setProperties(adsRequest, adsRequestOptions)
@@ -326,7 +326,7 @@ export default class ImaPlayer {
 
     // Assumes that ads rendering options is an object with ads rendering settings properties
     // defined in the IMA SDK documentation (will override default settings)
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdsRenderingSettings
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRenderingSettings
     if (this._o.adsRenderingOptions) {
       this._setProperties(adsRenderingSettings, this._o.adsRenderingOptions)
     }
@@ -365,8 +365,8 @@ export default class ImaPlayer {
   }
 
   _onAdError(adErrorEvent) {
-    // google.ima.AdErrorEvent : https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdErrorEvent
-    // google.ima.AdError : https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/apis#ima.AdError
+    // google.ima.AdErrorEvent : https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdErrorEvent
+    // google.ima.AdError : https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdError
     // console.log('onAdError: ' + adErrorEvent.getError())
     this._dispatch('ad_error', adErrorEvent)
     this._endAd()
