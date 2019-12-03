@@ -62,7 +62,9 @@ export default class ImaPlayer {
 
   _setProperties(target, properties) {
     for (let prop in properties) {
-      target[prop] && (target[prop] = properties[prop])
+      if (typeof target[prop] !== 'undefined') {
+        target[prop] = properties[prop]
+      }
     }
   }
 
