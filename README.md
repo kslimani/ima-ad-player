@@ -30,6 +30,8 @@ ImaAdPlayer({
   // },
   // adsRenderingOptions: {
   //   loadVideoTimeout: 10000,
+  //   useStyledLinearAds: true,
+  //   useStyledNonLinearAds: true,
   // },
   // timeout: 2000,
   // debug: true,
