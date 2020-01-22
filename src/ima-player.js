@@ -56,6 +56,9 @@ export default class ImaPlayer {
     this._o.adWillAutoPlay = !!makeDefault(o.adWillAutoPlay, true)
     this._o.adWillPlayMuted = !!makeDefault(o.adWillPlayMuted, false)
 
+    // Default is undefined
+    this._o.continuousPlayback = o.continuousPlayback
+
     // Default is to tell the SDK NOT to save and restore content video state
     this._o.restoreVideo =  !!makeDefault(o.restoreVideo, false)
   }
@@ -124,6 +127,10 @@ export default class ImaPlayer {
 
   setAdWillPlayMuted(muted) {
     this._o.adWillPlayMuted = muted
+  }
+
+  setContinuousPlayback(continuousPlayback) {
+    this._o.continuousPlayback = continuousPlayback
   }
 
   stop() {
@@ -220,6 +227,11 @@ export default class ImaPlayer {
     adsRequest.nonLinearAdSlotHeight = this._o.video.offsetHeight
     adsRequest.setAdWillAutoPlay(this._o.adWillAutoPlay)
     adsRequest.setAdWillPlayMuted(this._o.adWillPlayMuted)
+
+    if (this._o.continuousPlayback !== undefined) {
+      // undefined = "0", false = "1", true = "2"
+      adsRequest.setContinuousPlayback(this._o.continuousPlayback)
+    }
 
     // Assumes that ad request options is an object with ads request properties
     // defined in the IMA SDK documentation (will override default settings)
