@@ -38,6 +38,7 @@ ImaAdPlayer({
   // clickTracking: clickTrackingElement,
   // adWillAutoPlay: false, // Default is true
   // adWillPlayMuted: true, // Default is false
+  // continuousPlayback: true, // Default is undefined
 }, function(player, error) {
   if (error) {
     // Ad player creation failed
