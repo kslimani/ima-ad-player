@@ -36,6 +36,8 @@ ImaAdPlayer({
   // timeout: 2000,
   // debug: true,
   // clickTracking: clickTrackingElement,
+  // adWillAutoPlay: false, // Default is true
+  // adWillPlayMuted: true, // Default is false
 }, function(player, error) {
   if (error) {
     // Ad player creation failed
@@ -62,3 +64,11 @@ ImaAdPlayer({
   player.play();
 });
 ```
+
+## Autoplay
+
+Ad player default behaviour is to assumes that `play()` method is called when video is allowed to autostart. _(ie: autoplay is permitted or called after user interaction)_
+
+For that reason, default internal behaviour is to call `setAdWillAutoPlay(true)` and `setAdWillPlayMuted(false)` on IMA AdRequest instance.
+
+It can be changed using `adWillAutoPlay` and `adWillPlayMuted` configuration options.
