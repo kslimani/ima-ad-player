@@ -3,8 +3,5 @@
     "modules": "commonjs",
     "corejs": "3",
     "useBuiltIns": "usage"
-  }]],
-  "plugins": [
-    "add-module-exports"
-  ]
+  }]]
 }
