@@ -2,7 +2,9 @@
 
 Yet another [Google IMA HTML5 SDK](https://developers.google.com/interactive-media-ads/docs/sdks/html5) video ad player.
 
-## Quick usage
+## Getting started
+
+Add the ad player script to your HTML :
 
 ```html
 <head>
@@ -10,66 +12,77 @@ Yet another [Google IMA HTML5 SDK](https://developers.google.com/interactive-med
 </head>
 ```
 
-```javascript
-// Ad player assumes the ad display container and video element are correctly positioned and sized
-var videoElement = document.querySelector('.a-video-element');
-var adContainer = document.querySelector('.a-display-container-element');
-// var clickTrackingElement = document.querySelector('.optional-click-tracking-element');
+Then use the `ImaAdPlayer` factory to create ad player instance :
 
+```javascript
 ImaAdPlayer({
-  video: videoElement,
-  displayContainer: adContainer,
+  video: document.querySelector('.a-video-element'),
+  displayContainer: document.querySelector('.a-display-container-element'),
   tag: 'https://myadserver.com/path/to/vast/tag.xml',
-  vpaidMode: 2,
-  locale: 'fr',
-  maxDuration: 30000,
-  // nonLinearMaxDuration: 8000,
-  // restoreVideo: true,
-  // adsRequestOptions: {
-  //   vastLoadTimeout: 10000,
-  // },
-  // adsRenderingOptions: {
-  //   loadVideoTimeout: 10000,
-  //   useStyledLinearAds: true,
-  //   useStyledNonLinearAds: true,
-  // },
-  // timeout: 2000,
-  // debug: true,
-  // clickTracking: clickTrackingElement,
-  // adWillAutoPlay: false, // Default is true
-  // adWillPlayMuted: true, // Default is false
-  // continuousPlayback: true, // Default is undefined
 }, function(player, error) {
   if (error) {
     // Ad player creation failed
     return console.log(error);
   }
 
-  player.on('ad_begin', function(o) {
+  player.on('ad_begin', function() {
     // Pause content video
   });
 
-  player.on('ad_end', function(o) {
+  player.on('ad_end', function() {
     // Play or resume content video
-
-    /**
-     * o.name is event name
-     * o.data is event object (may equals undefined)
-     * o.target is ad player instance
-     */
-     console.log(o);
   });
 
-  // Must be done via a user interaction (if autoplay not permitted)
-  // player.initAdDisplayContainer()
+  // Must be done as the result of a user action (if autoplay not permitted)
   player.play();
 });
 ```
+
+The ad player assumes the [ad display container](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdDisplayContainer) and video element __are correctly positioned and sized__.
+
+## Documentation
+
+* ad player [configuration options](docs/config.md)
+* ad player [events](docs/events.md)
+* ad player [api](docs/api.md)
+
+For a complete example see the HTML [development page](public/index.html).
 
 ## Autoplay
 
 Ad player default behaviour is to assumes that `play()` method is called when video is allowed to autostart. _(ie: autoplay is permitted or called after user interaction)_
 
-For that reason, default internal behaviour is to call `setAdWillAutoPlay(true)` and `setAdWillPlayMuted(false)` on IMA AdRequest instance.
+For that reason, default internal behaviour is to call `setAdWillAutoPlay(true)` and `setAdWillPlayMuted(false)` on IMA [AdsRequest](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRequest) instance.
 
 It can be changed using `adWillAutoPlay` and `adWillPlayMuted` configuration options.
+
+## Usage as Node.js external dependency
+
+Add it to your project, for example, using NPM command :
+
+```shell
+$ npm install ima-ad-player
+```
+
+Then import and use ad player factory :
+
+```javascript
+import ImaAdPlayer from 'ima-ad-player'
+
+ImaAdPlayer({
+  // ...
+}, function(player, error) {
+  // ...
+});
+```
+
+## About
+
+This library is basically a wrapper on IMA SDK library. The goal is to provide a simple implementation which cover common ad scenarios.
+
+I created this project because I needed to implement the IMA SDK in several other projects without having to duplicate the implementation code.
+
+It is used in the following projects :
+
+* [ad-inflow-modal](https://github.com/kslimani/ad-inflow-modal)
+* [clappr-ima-plugin](https://github.com/kslimani/clappr-ima-plugin)
