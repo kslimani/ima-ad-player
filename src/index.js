@@ -10,5 +10,5 @@ export default function (options, cb) {
     }
 
     cb(new ImaPlayer(options), null)
-  }, makeNum(options.timemout, 6000), !!options.debug)
+  }, makeNum(options.timeout, 6000), !!options.debug)
 }

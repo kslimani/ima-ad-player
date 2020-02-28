@@ -3,6 +3,8 @@
 import {makeNum, makeDefault} from './utils'
 import Observable from './observable'
 
+/* global google */
+
 export default class ImaPlayer {
   constructor(options) {
     this._configure(options)
