@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --progress --mode production",
     "dist": "webpack --progress --mode production",
-    "release": "npm run build && npm run dist",
+    "lint": "eslint webpack.config.js src/**/*.js",
+    "release": "npm run lint &&  npm run build && npm run dist",
     "start": "webpack-dev-server --mode development"
   },
   "author": "Karim Slimani <karim@playmedia.fr>",
@@ -23,6 +24,7 @@
     "@babel/preset-env": "^7.8",
     "babel-loader": "^8.0",
     "core-js": "^3.6",
+    "eslint": "^6.8.0",
     "terser-webpack-plugin": "^2.3",
     "webpack": "^4.0",
     "webpack-build-notifier": "^2.0",
