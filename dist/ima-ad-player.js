@@ -858,10 +858,8 @@ function _default(options, cb) {
     }
 
     cb(new _imaPlayer["default"](options), null);
-  }, (0, _utils.makeNum)(options.timemout, 6000), !!options.debug);
+  }, (0, _utils.makeNum)(options.timeout, 6000), !!options.debug);
 }
-
-module.exports = exports.default;
 
 /***/ }),
 /* 41 */
@@ -910,8 +908,6 @@ function _default(cb) {
     }, timeout);
   }
 }
-
-module.exports = exports.default;
 
 /***/ }),
 /* 42 */
@@ -1278,9 +1274,8 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var ImaPlayer =
-/*#__PURE__*/
-function () {
+/* global google */
+var ImaPlayer = /*#__PURE__*/function () {
   function ImaPlayer(options) {
     _classCallCheck(this, ImaPlayer);
 
@@ -1758,7 +1753,6 @@ function () {
 }();
 
 exports["default"] = ImaPlayer;
-module.exports = exports.default;
 
 /***/ }),
 /* 59 */
@@ -1857,9 +1851,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 // observable.js
-var Observable =
-/*#__PURE__*/
-function () {
+var Observable = /*#__PURE__*/function () {
   function Observable() {
     _classCallCheck(this, Observable);
 
@@ -1916,7 +1908,6 @@ function () {
 }();
 
 exports["default"] = Observable;
-module.exports = exports.default;
 
 /***/ }),
 /* 63 */
@@ -2309,5 +2300,5 @@ module.exports = {
 
 
 /***/ })
-/******/ ]);
+/******/ ])["default"];
 });
