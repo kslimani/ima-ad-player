@@ -16,9 +16,7 @@ export default class ImaPlayer {
     google.ima.settings.setVpaidMode(this._vpaidMode)
 
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.ImaSdkSettings#setLocale
-    if (this._o.locale) {
-      google.ima.settings.setLocale(this._o.locale)
-    }
+    this._o.locale && google.ima.settings.setLocale(this._o.locale)
 
     // Assumes the display container and video element are correctly positioned and sized
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/#html
@@ -109,18 +107,42 @@ export default class ImaPlayer {
     this._requestAd(options)
   }
 
-  resize(width, height) {
+  resize(width, height, viewMode = null) {
     if (this._adsManager) {
       // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#resize
-      this._adsManager.resize(width, height, google.ima.ViewMode.NORMAL)
+      viewMode || (viewMode = google.ima.ViewMode.NORMAL)
+      this._adsManager.resize(width, height, viewMode)
     }
   }
 
   setVolume(volume) {
-    if (this._adsManager) {
-      // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#setVolume
-      this._adsManager.setVolume(volume)
-    }
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#setVolume
+    this._adsManager && this._adsManager.setVolume(volume)
+  }
+
+  discardAdBreak() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#discardAdBreak
+    this._adsManager && this._adsManager.discardAdBreak()
+  }
+
+  pause() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#pause
+    this._adsManager && this._adsManager.pause()
+  }
+
+  resume() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#resume
+    this._adsManager && this._adsManager.resume()
+  }
+
+  skip() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#skip
+    this._adsManager && this._adsManager.skip()
+  }
+
+  updateAdsRenderingSettings(adsRenderingSettings) {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#updateAdsRenderingSettings
+    this._adsManager && this._adsManager.updateAdsRenderingSettings(adsRenderingSettings)
   }
 
   setAdWillAutoPlay(autoPlay) {
@@ -155,12 +177,9 @@ export default class ImaPlayer {
   }
 
   destroy(unsubscribeEvents = true) {
-    if (! this._end) {
-      this._resetMaxDurationTimer()
-      unsubscribeEvents && this._evt.unsubscribeAll()
-      this._adsManager && this._adsManager.stop()
-    }
-
+    this._adsManager && this._adsManager.stop()
+    this._endAd()
+    unsubscribeEvents && this._evt.unsubscribeAll()
     this._destroyAdsManager()
     this._adsLoader && this._adsLoader.destroy()
     this._adDisplayContainer && this._adDisplayContainer.destroy()
@@ -189,14 +208,13 @@ export default class ImaPlayer {
     this._adsLoader.addEventListener(
       google.ima.AdErrorEvent.Type.AD_ERROR,
       (e) => {
+        this._adRequested = false
         this._onAdError(e)
       }
     )
   }
 
   _requestAd(options) {
-    this._end = false
-
     // Check if ad request is pending
     if (this._adRequesting) {
       // Ad will autostart if play method called
@@ -262,7 +280,7 @@ export default class ImaPlayer {
     })
 
     this._adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, (e) => {
-      this._end = false
+      this._adEnded = false
       this._dispatch('content_pause_requested', e)
       this._dispatch('ad_begin') // "content_pause_requested" event alias
     })
@@ -296,12 +314,16 @@ export default class ImaPlayer {
       }
     })
 
+    this._adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, (e) => {
+      this._adRequested = false
+      this._dispatch('all_ads_completed', e)
+    })
+
     let adEvents = {
       'ad_break_ready': google.ima.AdEvent.Type.AD_BREAK_READY,
       'ad_buffering': google.ima.AdEvent.Type.AD_BUFFERING,
       'ad_metadata': google.ima.AdEvent.Type.AD_METADATA,
       'ad_progress': google.ima.AdEvent.Type.AD_PROGRESS,
-      'all_ads_completed': google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
       'click': google.ima.AdEvent.Type.CLICK,
       'complete': google.ima.AdEvent.Type.COMPLETE,
       'duration_change': google.ima.AdEvent.Type.DURATION_CHANGE,
@@ -391,6 +413,7 @@ export default class ImaPlayer {
   _playAd() {
     try {
       this._dispatch('ad_play')
+      this._adEnded = false
 
       this._adsManager.init(
         this._o.video.offsetWidth,
@@ -414,14 +437,13 @@ export default class ImaPlayer {
   }
 
   _endAd() {
-    if (this._end) {
+    if (this._adEnded) {
       return
     }
 
-    this._end = true
+    this._adEnded = true
     this._adPlayIntent = false
     this._adRequesting = false
-    this._adRequested = false
     this._resetMaxDurationTimer()
     this._dispatch('ad_end')
   }
