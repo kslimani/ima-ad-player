@@ -183,14 +183,13 @@ export default class ImaPlayer {
     this._adsLoader.addEventListener(
       google.ima.AdErrorEvent.Type.AD_ERROR,
       (e) => {
+        this._adRequested = false
         this._onAdError(e)
       }
     )
   }
 
   _requestAd(options) {
-    this._adEnded = false
-
     // Check if ad request is pending
     if (this._adRequesting) {
       // Ad will autostart if play method called
@@ -290,12 +289,16 @@ export default class ImaPlayer {
       }
     })
 
+    this._adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, (e) => {
+      this._adRequested = false
+      this._dispatch('all_ads_completed', e)
+    })
+
     let adEvents = {
       'ad_break_ready': google.ima.AdEvent.Type.AD_BREAK_READY,
       'ad_buffering': google.ima.AdEvent.Type.AD_BUFFERING,
       'ad_metadata': google.ima.AdEvent.Type.AD_METADATA,
       'ad_progress': google.ima.AdEvent.Type.AD_PROGRESS,
-      'all_ads_completed': google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
       'click': google.ima.AdEvent.Type.CLICK,
       'complete': google.ima.AdEvent.Type.COMPLETE,
       'duration_change': google.ima.AdEvent.Type.DURATION_CHANGE,
@@ -385,6 +388,7 @@ export default class ImaPlayer {
   _playAd() {
     try {
       this._dispatch('ad_play')
+      this._adEnded = false
 
       this._adsManager.init(
         this._o.video.offsetWidth,
@@ -415,7 +419,6 @@ export default class ImaPlayer {
     this._adEnded = true
     this._adPlayIntent = false
     this._adRequesting = false
-    this._adRequested = false
     this._resetMaxDurationTimer()
     this._dispatch('ad_end')
   }
