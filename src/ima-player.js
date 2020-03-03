@@ -16,9 +16,7 @@ export default class ImaPlayer {
     google.ima.settings.setVpaidMode(this._vpaidMode)
 
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.ImaSdkSettings#setLocale
-    if (this._o.locale) {
-      google.ima.settings.setLocale(this._o.locale)
-    }
+    this._o.locale && google.ima.settings.setLocale(this._o.locale)
 
     // Assumes the display container and video element are correctly positioned and sized
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/#html
@@ -109,18 +107,17 @@ export default class ImaPlayer {
     this._requestAd(options)
   }
 
-  resize(width, height) {
+  resize(width, height, viewMode = null) {
     if (this._adsManager) {
       // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#resize
-      this._adsManager.resize(width, height, google.ima.ViewMode.NORMAL)
+      viewMode || (viewMode = google.ima.ViewMode.NORMAL)
+      this._adsManager.resize(width, height, viewMode)
     }
   }
 
   setVolume(volume) {
-    if (this._adsManager) {
-      // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#setVolume
-      this._adsManager.setVolume(volume)
-    }
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#setVolume
+    this._adsManager && this._adsManager.setVolume(volume)
   }
 
   setAdWillAutoPlay(autoPlay) {
