@@ -152,7 +152,7 @@ export default class ImaPlayer {
   }
 
   destroy(unsubscribeEvents = true) {
-    if (! this._end) {
+    if (! this._adEnded) {
       this._resetMaxDurationTimer()
       unsubscribeEvents && this._evt.unsubscribeAll()
       this._adsManager && this._adsManager.stop()
@@ -192,7 +192,7 @@ export default class ImaPlayer {
   }
 
   _requestAd(options) {
-    this._end = false
+    this._adEnded = false
 
     // Check if ad request is pending
     if (this._adRequesting) {
@@ -259,7 +259,7 @@ export default class ImaPlayer {
     })
 
     this._adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, (e) => {
-      this._end = false
+      this._adEnded = false
       this._dispatch('content_pause_requested', e)
       this._dispatch('ad_begin') // "content_pause_requested" event alias
     })
@@ -411,11 +411,11 @@ export default class ImaPlayer {
   }
 
   _endAd() {
-    if (this._end) {
+    if (this._adEnded) {
       return
     }
 
-    this._end = true
+    this._adEnded = true
     this._adPlayIntent = false
     this._adRequesting = false
     this._adRequested = false
