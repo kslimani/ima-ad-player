@@ -28,7 +28,7 @@ player.initAdDisplayContainer()
 
 ## off(name[, cb])
 
-Remove one or all event listener(s).
+Remove one or all [event](events.md) listener(s).
 
 | Name | Type | Description |
 | ---  | --- | --- |
@@ -43,7 +43,7 @@ player.off('ad_begin') // Unbind all listeners
 
 ## on(name, cb)
 
-Add an event listener.
+Add an [event](events.md) listener.
 
 | Name | type | Description |
 | ---  | --- | --- |
@@ -79,7 +79,8 @@ Request ads from ad server. It is usefull, for example, to pre-request ads when 
 ```javascript
 player.request()
 
-player.request({vastLoadTimeout: 10000}) // Note: it overrides ads request properties set with "adsRequestOptions" configuration option
+// Overrides ads request properties set with "adsRequestOptions" configuration option
+player.request({vastLoadTimeout: 10000})
 ```
 
 ## resize(width, height)
