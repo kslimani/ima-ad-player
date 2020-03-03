@@ -50,7 +50,7 @@ For a complete example see the HTML [development page](public/index.html).
 
 ## Autoplay
 
-Ad player default behaviour is to assumes that `play()` method is called when video is allowed to autostart. _(ie: autoplay is permitted or called after user interaction)_
+Ad player default behaviour is to assumes that `play()` method is called __when video is allowed to autostart__. _(ie: autoplay is permitted or called after user interaction)_
 
 For that reason, default internal behaviour is to call `setAdWillAutoPlay(true)` and `setAdWillPlayMuted(false)` on IMA [AdsRequest](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRequest) instance.
 
