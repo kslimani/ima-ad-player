@@ -23,19 +23,19 @@ ImaAdPlayer({
 
 | Name | Description |
 | ---  | --- |
-| ad_begin | ad player is ready to play ad (alias of "content_pause_requested" event) |
-| ad_end | ad player has finished and video content can be played or resumed |
-| ad_non_linear | Signal non-linear ad display scenario |
-| ad_play | requested ad is attempted to be played |
+| ad_begin | ad player is ready to play ad. (alias of "content_pause_requested" event) |
+| ad_end | ad player has finished and video content can be played or resumed. |
+| ad_non_linear | Signal non-linear ad display scenario. |
+| ad_play | requested ad is attempted to be played. |
 | ad_play_intent | ad player `play()` method is called. |
-| ad_request | [AdsRequest](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRequest) instance is available |
+| ad_request | [AdsRequest](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRequest) instance is available. (but not requested yet) |
 | ad_request_intent | ad player `request()` method is called. |
-| ad_stop | ad player is stopping ad |
+| ad_stop | ad player is stopping ad. |
 | ad_stop_intent | ad player `stop()` method is called. |
-| ads_manager | [AdsManager](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager) instance is available |
-| ads_manager_loaded | [AdsManagerLoadedEvent](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManagerLoadedEvent) instance is available |
-| ads_rendering_settings | [AdsRenderingSettings](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRenderingSettings) instance is available |
-| error | An error has occured |
+| ads_manager | [AdsManager](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager) instance is available. (after ad request success) |
+| ads_manager_loaded | [AdsManagerLoadedEvent](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManagerLoadedEvent) instance is available. (after ad request success, before AdsManager creation) |
+| ads_rendering_settings | [AdsRenderingSettings](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRenderingSettings) instance is available. |
+| error | An error has occured. |
 
 ## IMA SDK mapped [event types](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdEvent#property)
 
