@@ -70,9 +70,7 @@ player.play()
 
 ## request([options])
 
-Request ads from ad server.
-
-It is automaticalled called by play() method, but may be usefull to pre-request ads. (for example, if autoplay is not allowed)
+Request ads from ad server. It is usefull, for example, to pre-request ads when autoplay is not allowed.
 
 | Name | Type | Description |
 | ---  | --- | --- |
@@ -81,7 +79,7 @@ It is automaticalled called by play() method, but may be usefull to pre-request 
 ```javascript
 player.request()
 
-player.request({vastLoadTimeout: 10000})
+player.request({vastLoadTimeout: 10000}) // Note: it overrides ads request properties set with "adsRequestOptions" configuration option
 ```
 
 ## resize(width, height)
