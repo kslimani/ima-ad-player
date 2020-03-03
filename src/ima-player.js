@@ -152,12 +152,9 @@ export default class ImaPlayer {
   }
 
   destroy(unsubscribeEvents = true) {
-    if (! this._adEnded) {
-      this._resetMaxDurationTimer()
-      unsubscribeEvents && this._evt.unsubscribeAll()
-      this._adsManager && this._adsManager.stop()
-    }
-
+    this._adsManager && this._adsManager.stop()
+    this._endAd()
+    unsubscribeEvents && this._evt.unsubscribeAll()
     this._destroyAdsManager()
     this._adsLoader && this._adsLoader.destroy()
     this._adDisplayContainer && this._adDisplayContainer.destroy()
