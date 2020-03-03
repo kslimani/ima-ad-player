@@ -120,6 +120,31 @@ export default class ImaPlayer {
     this._adsManager && this._adsManager.setVolume(volume)
   }
 
+  discardAdBreak() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#discardAdBreak
+    this._adsManager && this._adsManager.discardAdBreak()
+  }
+
+  pause() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#pause
+    this._adsManager && this._adsManager.pause()
+  }
+
+  resume() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#resume
+    this._adsManager && this._adsManager.resume()
+  }
+
+  skip() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#skip
+    this._adsManager && this._adsManager.skip()
+  }
+
+  updateAdsRenderingSettings(adsRenderingSettings) {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#updateAdsRenderingSettings
+    this._adsManager && this._adsManager.updateAdsRenderingSettings(adsRenderingSettings)
+  }
+
   setAdWillAutoPlay(autoPlay) {
     this._o.adWillAutoPlay = autoPlay
   }
