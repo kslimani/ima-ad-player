@@ -17,7 +17,7 @@
 | tag | string | __yes__ | The VAST Ad tag URL. |
 | timeout | integer | no | The duration in milliseconds to wait for the IMA SDK library to be loaded. (default is 6000) |
 | video | HTMLVideoElement | __yes__ | HTML Video element (content video element) |
-| vpaidMode | integer | no | The [VPAID playback mode](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.ImaSdkSettings#.VpaidMode). 0 is DISABLED, 1 is INSECURE and 2 is ENABLED. (default is ENABLED) |
+| vpaidMode | integer | no | The [VPAID playback mode](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima#.VpaidMode). 0 is DISABLED, 1 is ENABLED and 2 is INSECURE. (default is ENABLED) |
 
 ## Advanced configuration example
 
@@ -31,7 +31,7 @@ ImaAdPlayer({
   video: videoElement,
   displayContainer: adContainer,
   tag: 'https://myadserver.com/path/to/vast/tag.xml',
-  vpaidMode: 2,
+  vpaidMode: 2, // Same as google.ima.ImaSdkSettings.VpaidMode.INSECURE
   locale: 'fr',
   maxDuration: 30000,
   nonLinearMaxDuration: 8000,
