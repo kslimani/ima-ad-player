@@ -13,7 +13,7 @@ export default class ImaPlayer {
     this._adRequested = false
 
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.ImaSdkSettings#setVpaidMode
-    google.ima.settings.setVpaidMode(this._vpaidMode)
+    this._o.vpaidMode && google.ima.settings.setVpaidMode(this._resolvedVpaidMode)
 
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.ImaSdkSettings#setLocale
     this._o.locale && google.ima.settings.setLocale(this._o.locale)
@@ -30,7 +30,11 @@ export default class ImaPlayer {
       video: o.video,
       tag: o.tag,
     }
-    this._o.vpaidMode = makeNum(o.vpaidMode, 0)
+
+    // VPAID mode will be ima SDK default (if not set)
+    if (o.vpaidMode) {
+      this._o.vpaidMode = makeNum(o.vpaidMode, undefined)
+    }
 
     if (o.maxDuration) {
       this._o.maxDuration = makeNum(o.maxDuration, undefined)
@@ -71,15 +75,24 @@ export default class ImaPlayer {
     }
   }
 
-  get _vpaidMode() {
-    if (this._o.vpaidMode === 0) {
+  static get vpaidMode() {
+    return {
+      DISABLED: 0,
+      ENABLED: 1,
+      INSECURE: 2
+    }
+  }
+
+  get _resolvedVpaidMode() {
+    if (this._o.vpaidMode === ImaPlayer.vpaidMode.DISABLED) {
       return google.ima.ImaSdkSettings.VpaidMode.DISABLED
     }
 
-    if (this._o.vpaidMode > 1) {
+    if (this._o.vpaidMode === ImaPlayer.vpaidMode.INSECURE) {
       return google.ima.ImaSdkSettings.VpaidMode.INSECURE
     }
 
+    // Default to SECURE mode
     return google.ima.ImaSdkSettings.VpaidMode.ENABLED
   }
 
