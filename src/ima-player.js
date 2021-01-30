@@ -353,6 +353,8 @@ export default class ImaPlayer {
       'skipped': google.ima.AdEvent.Type.SKIPPED,
       'third_quartile': google.ima.AdEvent.Type.THIRD_QUARTILE,
       'user_close': google.ima.AdEvent.Type.USER_CLOSE,
+      'video_clicked': google.ima.AdEvent.Type.VIDEO_CLICKED,
+      'video_icon_clicked': google.ima.AdEvent.Type.VIDEO_ICON_CLICKED,
       'volume_changed': google.ima.AdEvent.Type.VOLUME_CHANGED,
       'volume_muted': google.ima.AdEvent.Type.VOLUME_MUTED,
     }
