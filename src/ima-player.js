@@ -12,14 +12,14 @@ export default class ImaPlayer {
     this._adRequesting = false
     this._adRequested = false
 
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.ImaSdkSettings#setVpaidMode
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.ImaSdkSettings#setVpaidMode
     this._o.vpaidMode && google.ima.settings.setVpaidMode(this._resolvedVpaidMode)
 
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.ImaSdkSettings#setLocale
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.ImaSdkSettings#setLocale
     this._o.locale && google.ima.settings.setLocale(this._o.locale)
 
     // Assumes the display container and video element are correctly positioned and sized
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/#html
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side#html
     this._adDisplayContainer = new google.ima.AdDisplayContainer(this._o.displayContainer, this._o.video, this._o.clickTracking)
     this._adDisplayContainerInit = false
   }
@@ -44,7 +44,7 @@ export default class ImaPlayer {
     this._o.locale = o.locale
 
     // Default is undefined or alternative video ad click element
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdDisplayContainer
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdDisplayContainer
     this._o.clickTracking = o.clickTracking
 
     // Default is undefined or object
@@ -122,40 +122,81 @@ export default class ImaPlayer {
 
   resize(width, height, viewMode = null) {
     if (this._adsManager) {
-      // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#resize
+      // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#resize
       viewMode || (viewMode = google.ima.ViewMode.NORMAL)
       this._adsManager.resize(width, height, viewMode)
     }
   }
 
   setVolume(volume) {
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#setVolume
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#setVolume
     this._adsManager && this._adsManager.setVolume(volume)
   }
 
+  getVolume() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getVolume
+    this._adsManager && this._adsManager.getVolume()
+  }
+
   discardAdBreak() {
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#discardAdBreak
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#discardAdBreak
     this._adsManager && this._adsManager.discardAdBreak()
   }
 
   pause() {
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#pause
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#pause
     this._adsManager && this._adsManager.pause()
   }
 
   resume() {
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#resume
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#resume
     this._adsManager && this._adsManager.resume()
   }
 
   skip() {
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#skip
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#skip
     this._adsManager && this._adsManager.skip()
   }
 
   updateAdsRenderingSettings(adsRenderingSettings) {
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#updateAdsRenderingSettings
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#updateAdsRenderingSettings
     this._adsManager && this._adsManager.updateAdsRenderingSettings(adsRenderingSettings)
+  }
+
+  configureAdsManager(content, adsRenderingSettings) {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#configureAdsManager
+    this._adsManager && this._adsManager.configureAdsManager(content, adsRenderingSettings)
+  }
+
+  focus() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#focus
+    this._adsManager && this._adsManager.focus()
+  }
+
+  getCuePoints()
+  {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getCuePoints
+    this._adsManager && this._adsManager.getCuePoints()
+  }
+
+  getAdSkippableState() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getAdSkippableState
+    this._adsManager && this._adsManager.getAdSkippableState()
+  }
+
+  getRemainingTime() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getRemainingTime
+    this._adsManager && this._adsManager.getRemainingTime()
+  }
+
+  isCustomClickTrackingUsed() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#isCustomClickTrackingUsed
+    this._adsManager && this._adsManager.isCustomClickTrackingUsed()
+  }
+
+  isCustomPlaybackUsed() {
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#isCustomPlaybackUsed
+    this._adsManager && this._adsManager.isCustomPlaybackUsed()
   }
 
   setAdWillAutoPlay(autoPlay) {
@@ -268,7 +309,7 @@ export default class ImaPlayer {
 
     // Assumes that ad request options is an object with ads request properties
     // defined in the IMA SDK documentation (will override default settings)
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRequest
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsRequest
     let adsRequestOptions = options ? options : this._o.adsRequestOptions
     if (adsRequestOptions) {
       this._setProperties(adsRequest, adsRequestOptions)
@@ -379,7 +420,7 @@ export default class ImaPlayer {
 
     // Assumes that ads rendering options is an object with ads rendering settings properties
     // defined in the IMA SDK documentation (will override default settings)
-    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRenderingSettings
+    // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsRenderingSettings
     if (this._o.adsRenderingOptions) {
       this._setProperties(adsRenderingSettings, this._o.adsRenderingOptions)
     }
@@ -418,8 +459,8 @@ export default class ImaPlayer {
   }
 
   _onAdError(adErrorEvent) {
-    // google.ima.AdErrorEvent : https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdErrorEvent
-    // google.ima.AdError : https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdError
+    // google.ima.AdErrorEvent : https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdErrorEvent
+    // google.ima.AdError : https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdError
     // console.log('onAdError: ' + adErrorEvent.getError())
     this._dispatch('ad_error', adErrorEvent)
     this._endAd()
