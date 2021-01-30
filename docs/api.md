@@ -1,5 +1,9 @@
 # Ad player API
 
+## configureAdsManager(content, adsRenderingSettings)
+
+Same as [AdsManager.configureAdsManager()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#configureAdsManager) method.
+
 ## discardAdBreak()
 
 Same as [AdsManager.discardAdBreak()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#discardAdBreak) method.
@@ -20,6 +24,26 @@ Signals the [video content is finished](https://developers.google.com/interactiv
 player.ended()
 ```
 
+## focus()
+
+Same as [AdsManager.focus()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#focus) method.
+
+## getAdSkippableState()
+
+Same as [AdsManager.getAdSkippableState()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getAdSkippableState) method.
+
+## getCuePoints()
+
+Same as [AdsManager.getCuePoints()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getCuePoints) method.
+
+## getRemainingTime()
+
+Same as [AdsManager.getRemainingTime()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getRemainingTime) method.
+
+## getVolume()
+
+Same as [AdsManager.getVolume()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getVolume) method.
+
 ## initAdDisplayContainer()
 
 Initialize the [ad display container](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdDisplayContainer#initialize). This method __must__ be called as the result of a user action.
@@ -29,6 +53,14 @@ It is automaticalled called by play() method, but may be usefull to call it befo
 ```javascript
 player.initAdDisplayContainer()
 ```
+
+## isCustomClickTrackingUsed()
+
+Same as [AdsManager.isCustomClickTrackingUsed()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#isCustomClickTrackingUsed) method.
+
+## isCustomPlaybackUsed()
+
+Same as [AdsManager.isCustomPlaybackUsed()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#isCustomPlaybackUsed) method.
 
 ## off(name[, cb])
 
