@@ -303,7 +303,7 @@ export default class ImaPlayer {
     adsRequest.setAdWillPlayMuted(this._o.adWillPlayMuted)
 
     if (this._o.continuousPlayback !== undefined) {
-      // undefined = "0", false = "1", true = "2"
+      // Internally set AdsRequest.videoContinuousPlay to "0" if undefined, "1" if false, "2" if true
       adsRequest.setContinuousPlayback(this._o.continuousPlayback)
     }
 
