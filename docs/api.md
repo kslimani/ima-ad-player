@@ -143,7 +143,7 @@ Same as [AdsManager.resume()](https://developers.google.com/interactive-media-ad
 
 ## setAdWillAutoPlay(autoPlay)
 
-Same as `adWillAutoPlay` [configuration option](config.md).
+Same as `adWillAutoPlay` [configuration option](config.md). This method must be called before play() or request().
 
 ```javascript
 player.setAdWillAutoPlay(false)
@@ -151,7 +151,7 @@ player.setAdWillAutoPlay(false)
 
 ## setAdWillPlayMuted(muted)
 
-Same as `adWillPlayMuted` [configuration option](config.md).
+Same as `adWillPlayMuted` [configuration option](config.md). This method must be called before play() or request().
 
 ```javascript
 player.setAdWillPlayMuted(true)
@@ -159,7 +159,7 @@ player.setAdWillPlayMuted(true)
 
 ## setContinuousPlayback(continuousPlayback)
 
-Same as `continuousPlayback` [configuration option](config.md).
+Same as `continuousPlayback` [configuration option](config.md). This method must be called before play() or request().
 
 ```javascript
 player.setContinuousPlayback(true)
