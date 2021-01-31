@@ -1,8 +1,12 @@
 # Ad player API
 
+## configureAdsManager(content, adsRenderingSettings)
+
+Same as [AdsManager.configureAdsManager()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#configureAdsManager) method.
+
 ## discardAdBreak()
 
-Same as [AdsManager.discardAdBreak()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#discardAdBreak) method.
+Same as [AdsManager.discardAdBreak()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#discardAdBreak) method.
 
 ## destroy()
 
@@ -14,21 +18,49 @@ player.destroy()
 
 ## ended()
 
-Signals the [video content is finished](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsLoader#contentComplete). This will allow to play post-roll ads (if any).
+Signals the [video content is finished](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsLoader#contentComplete). This will allow to play post-roll ads (if any).
 
 ```javascript
 player.ended()
 ```
 
+## focus()
+
+Same as [AdsManager.focus()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#focus) method.
+
+## getAdSkippableState()
+
+Same as [AdsManager.getAdSkippableState()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getAdSkippableState) method.
+
+## getCuePoints()
+
+Same as [AdsManager.getCuePoints()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getCuePoints) method.
+
+## getRemainingTime()
+
+Same as [AdsManager.getRemainingTime()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getRemainingTime) method.
+
+## getVolume()
+
+Same as [AdsManager.getVolume()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getVolume) method.
+
 ## initAdDisplayContainer()
 
-Initialize the [ad display container](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdDisplayContainer#initialize). This method __must__ be called as the result of a user action.
+Initialize the [ad display container](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdDisplayContainer#initialize). This method __must__ be called as the result of a user action.
 
 It is automaticalled called by play() method, but may be usefull to call it before play() to store user interaction.
 
 ```javascript
 player.initAdDisplayContainer()
 ```
+
+## isCustomClickTrackingUsed()
+
+Same as [AdsManager.isCustomClickTrackingUsed()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#isCustomClickTrackingUsed) method.
+
+## isCustomPlaybackUsed()
+
+Same as [AdsManager.isCustomPlaybackUsed()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#isCustomPlaybackUsed) method.
 
 ## off(name[, cb])
 
@@ -66,7 +98,7 @@ player.on('ad_begin', function(o) {
 
 ## pause()
 
-Same as [AdsManager.pause()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#pause) method.
+Same as [AdsManager.pause()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#pause) method.
 
 ## play()
 
@@ -82,7 +114,7 @@ Request ads from ad server. It is usefull, for example, to pre-request ads when 
 
 | Name | Type | Description |
 | ---  | --- | --- |
-| options | object | Optional [ads request properties](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsRequest#properties) defined in the IMA SDK documentation |
+| options | object | Optional [ads request properties](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsRequest#properties) defined in the IMA SDK documentation |
 
 ```javascript
 player.request()
@@ -93,13 +125,13 @@ player.request({vastLoadTimeout: 10000})
 
 ## resize(width, height[, viewMode])
 
-Signals the ad player to [resize the current ad](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#resize).
+Signals the ad player to [resize the current ad](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#resize).
 
 | Name | Type | Description |
 | ---  | --- | --- |
 | width | integer | The new width |
 | height | integer | The new height |
-| viewMode | integer | The optional new [view mode](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima#.ViewMode). (default is google.ima.ViewMode.NORMAL) |
+| viewMode | integer | The optional new [view mode](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima#.ViewMode). (default is google.ima.ViewMode.NORMAL) |
 
 ```javascript
 player.resize(320, 240)
@@ -107,7 +139,7 @@ player.resize(320, 240)
 
 ## resume()
 
-Same as [AdsManager.resume()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#resume) method.
+Same as [AdsManager.resume()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#resume) method.
 
 ## setAdWillAutoPlay(autoPlay)
 
@@ -135,7 +167,7 @@ player.setContinuousPlayback(true)
 
 ## setVolume(volume)
 
-[Set the volume](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#setVolume) for the current ad.
+[Set the volume](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#setVolume) for the current ad.
 
 | Name | Type | Description |
 | ---  | --- | --- |
@@ -147,11 +179,11 @@ player.setVolume(0.5)
 
 ## skip()
 
-Same as [AdsManager.skip()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#skip) method.
+Same as [AdsManager.skip()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#skip) method.
 
 ## stop()
 
-[Stop](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#stop) the ad player.
+[Stop](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#stop) the ad player.
 
 ```javascript
 player.stop()
@@ -159,4 +191,4 @@ player.stop()
 
 ## updateAdsRenderingSettings(adsRenderingSettings)
 
-Same as [AdsManager.updateAdsRenderingSettings()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/v3/reference/js/ima.AdsManager#updateAdsRenderingSettings) method.
+Same as [AdsManager.updateAdsRenderingSettings()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#updateAdsRenderingSettings) method.
