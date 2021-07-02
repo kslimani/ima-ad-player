@@ -1,3 +1,5 @@
+[![MIT license](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 # Google IMA video ad player
 
 Yet another [Google IMA HTML5 SDK](https://developers.google.com/interactive-media-ads/docs/sdks/html5) video ad player.
@@ -86,3 +88,7 @@ It is used in the following projects :
 
 * [ad-inflow-modal](https://github.com/kslimani/ad-inflow-modal)
 * [clappr-ima-plugin](https://github.com/kslimani/clappr-ima-plugin)
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
