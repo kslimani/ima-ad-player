@@ -1,4 +1,4 @@
-// Webpack 4 configuration
+// Webpack 5 configuration
 const path = require('path')
 const TerserPlugin = require('terser-webpack-plugin');
 const NotifierPlugin = require('webpack-build-notifier')
