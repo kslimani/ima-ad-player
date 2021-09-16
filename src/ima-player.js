@@ -173,8 +173,7 @@ export default class ImaPlayer {
     this._adsManager && this._adsManager.focus()
   }
 
-  getCuePoints()
-  {
+  getCuePoints() {
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getCuePoints
     this._adsManager && this._adsManager.getCuePoints()
   }
