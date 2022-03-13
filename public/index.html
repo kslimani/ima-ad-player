@@ -258,6 +258,35 @@
           // player.on('started', function(){ adClickElement.style.visibility = 'visible'; });
           // player.on('ad_end', function(){ adClickElement.style.visibility = 'hidden'; });
 
+
+          // Fast & dirty ad playback custom controls
+          // var __e = document.createElement('div');
+          // player.on('started', function(o) {
+          //   var __p = o.target;
+          //   var __isPlaying = true;
+          //   __e.innerText = 'Pause';
+          //   __e.style.position = 'absolute';
+          //   __e.style.visibility = 'visible';
+          //   __e.style.zIndex = '10000';
+          //   __e.addEventListener('click', function() {
+          //     if (__isPlaying) {
+          //       __p.pause();
+          //       __e.innerText = 'Play';
+          //       __isPlaying = false;
+          //     } else {
+          //       __p.resume();
+          //       __e.innerText = 'Pause';
+          //       __isPlaying = true;
+          //     }
+          //   });
+          //   var __container = __p.getDisplayContainer();
+          //   __container.appendChild(__e);
+          // });
+          // player.on('ad_end', function() {
+          //   __e.style.visibility = 'hidden';
+          // });
+
+
           handleVpAutoplay(vp, requestAdIfNoAutoplay);
         });
 
