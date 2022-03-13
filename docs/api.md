@@ -32,17 +32,25 @@ Same as [AdsManager.focus()](https://developers.google.com/interactive-media-ads
 
 Same as [AdsManager.getAdSkippableState()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getAdSkippableState) method.
 
+This method returns __null__ if AdsManager instance is unavailable.
+
 ## getCuePoints()
 
 Same as [AdsManager.getCuePoints()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getCuePoints) method.
+
+This method returns __null__ if AdsManager instance is unavailable.
 
 ## getRemainingTime()
 
 Same as [AdsManager.getRemainingTime()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getRemainingTime) method.
 
+This method returns __null__ if AdsManager instance is unavailable.
+
 ## getVolume()
 
 Same as [AdsManager.getVolume()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getVolume) method.
+
+This method returns __null__ if AdsManager instance is unavailable.
 
 ## initAdDisplayContainer()
 
@@ -58,9 +66,13 @@ player.initAdDisplayContainer()
 
 Same as [AdsManager.isCustomClickTrackingUsed()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#isCustomClickTrackingUsed) method.
 
+This method returns __null__ if AdsManager instance is unavailable.
+
 ## isCustomPlaybackUsed()
 
 Same as [AdsManager.isCustomPlaybackUsed()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#isCustomPlaybackUsed) method.
+
+This method returns __null__ if AdsManager instance is unavailable.
 
 ## off(name[, cb])
 
