@@ -40,6 +40,10 @@ Same as [AdsManager.getCuePoints()](https://developers.google.com/interactive-me
 
 This method returns __null__ if AdsManager instance is unavailable.
 
+## getDisplayContainer()
+
+Get the DOM element used to display the ads in. (The HTML element set in `displayContainer` [configuration option](config.md))
+
 ## getRemainingTime()
 
 Same as [AdsManager.getRemainingTime()](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getRemainingTime) method.
