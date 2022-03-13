@@ -135,7 +135,7 @@ export default class ImaPlayer {
 
   getVolume() {
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getVolume
-    this._adsManager && this._adsManager.getVolume()
+    return this._adsManager ? this._adsManager.getVolume() : null
   }
 
   discardAdBreak() {
@@ -173,29 +173,33 @@ export default class ImaPlayer {
     this._adsManager && this._adsManager.focus()
   }
 
+  getDisplayContainer() {
+    return this._o.displayContainer
+  }
+
   getCuePoints() {
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getCuePoints
-    this._adsManager && this._adsManager.getCuePoints()
+    return this._adsManager ? this._adsManager.getCuePoints() : null
   }
 
   getAdSkippableState() {
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getAdSkippableState
-    this._adsManager && this._adsManager.getAdSkippableState()
+    return this._adsManager ? this._adsManager.getAdSkippableState() : null
   }
 
   getRemainingTime() {
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#getRemainingTime
-    this._adsManager && this._adsManager.getRemainingTime()
+    return this._adsManager ? this._adsManager.getRemainingTime() : null
   }
 
   isCustomClickTrackingUsed() {
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#isCustomClickTrackingUsed
-    this._adsManager && this._adsManager.isCustomClickTrackingUsed()
+    return this._adsManager ? this._adsManager.isCustomClickTrackingUsed() : null
   }
 
   isCustomPlaybackUsed() {
     // https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/reference/js/google.ima.AdsManager#isCustomPlaybackUsed
-    this._adsManager && this._adsManager.isCustomPlaybackUsed()
+    return this._adsManager ? this._adsManager.isCustomPlaybackUsed() : null
   }
 
   setAdWillAutoPlay(autoPlay) {
