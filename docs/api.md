@@ -13,7 +13,7 @@ Same as [AdsManager.discardAdBreak()](https://developers.google.com/interactive-
 Destroy the ad player instance. It stop and cleanup all internal instances and created DOM elements.
 
 ```javascript
-player.destroy()
+player.destroy() // This method may dispatch `ad_end` ad player event
 ```
 
 ## ended()
