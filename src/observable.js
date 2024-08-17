@@ -28,8 +28,10 @@ export default class Observable {
 
   unsubscribeAll(n = null) {
     if (n === null) {
+      this.observers = null
       this.observers = {}
     } else if (this.observers[n]) {
+      this.observers[n] = null
       delete this.observers[n]
     }
   }
