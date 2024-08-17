@@ -238,8 +238,38 @@ export default class ImaPlayer {
     this._endAd()
     unsubscribeEvents && this._evt.unsubscribeAll()
     this._destroyAdsManager()
-    this._adsLoader && this._adsLoader.destroy()
-    this._adDisplayContainer && this._adDisplayContainer.destroy()
+    this._destroyAdsLoader()
+    this._destroyAdDisplayContainer()
+    this._destroyOptions()
+  }
+
+  _destroyAdsLoader() {
+    if (this._adsLoader) {
+      this._adsLoader.destroy()
+      this._adsLoader = null
+      delete this._adsLoader
+    }
+  }
+
+  _destroyAdsManager() {
+    if (this._adsManager) {
+      this._adsManager.destroy()
+      this._adsManager = null
+      delete this._adsManager
+    }
+  }
+
+  _destroyAdDisplayContainer() {
+    if (this._adDisplayContainer) {
+      this._adDisplayContainer.destroy()
+      this._adDisplayContainer = null
+      delete this._adDisplayContainer
+    }
+  }
+
+  _destroyOptions() {
+    this._o = null
+    delete this._o
   }
 
   _stop() {
@@ -322,13 +352,6 @@ export default class ImaPlayer {
 
     // The requestAds() method triggers _onAdsManagerLoaded() or _onAdError()
     this._adsLoader.requestAds(adsRequest)
-  }
-
-  _destroyAdsManager() {
-    if (this._adsManager) {
-      this._adsManager.destroy()
-      delete this._adsManager
-    }
   }
 
   _bindAdsManagerEvents() {
